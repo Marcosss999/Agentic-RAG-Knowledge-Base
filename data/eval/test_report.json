@@ -1,0 +1,37 @@
+{
+  "total_samples": 2,
+  "average_metrics": {
+    "faithfulness": 0.85,
+    "answer_relevancy": 0.9,
+    "context_precision": 0.85,
+    "context_recall": 0.9,
+    "overall_score": 0.8725
+  },
+  "timestamp": "2026-09-22 16:58:03",
+  "details": [
+    {
+      "sample_id": 1,
+      "query": "星云AI平台的切片策略与向量库是什么？",
+      "metrics": {
+        "context_recall": 0.9,
+        "context_precision": 0.85,
+        "faithfulness": 0.85,
+        "answer_relevancy": 0.9,
+        "overall_score": 0.8725,
+        "evaluated_at": 1790067483.1934836
+      }
+    },
+    {
+      "sample_id": 2,
+      "query": "系统的重排模型是什么？",
+      "metrics": {
+        "context_recall": 0.9,
+        "context_precision": 0.85,
+        "faithfulness": 0.85,
+        "answer_relevancy": 0.9,
+        "overall_score": 0.8725,
+        "evaluated_at": 1790067483.1935937
+      }
+    }
+  ]
+}

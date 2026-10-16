@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nebula-RAG · 企业级自省智能知识库平台</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        claude: {
+                            50: '#faf9f5',
+                            100: '#f5f4ed',
+                            200: '#e6e4d9',
+                            300: '#d5d2c2',
+                            600: '#c2410c',
+                            700: '#9a3412',
+                        },
+                        ink: {
+                            950: '#090a0f',
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            600: '#475569',
+                            500: '#64748b',
+                            400: '#94a3b8',
+                            200: '#e2e8f0',
+                            100: '#f1f5f9',
+                            50: '#f8fafc',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"PingFang SC"', '"Hiragino Sans GB"', '"Microsoft YaHei"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', '"Fira Code"', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked.js Markdown 解析器 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+        /* 针对浅色底色的高对比度滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* 卡片柔和阴影与白底边界 */
+        .claude-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+        }
+        .claude-card-hover:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+        }
+        /* 打字机光标脉冲 */
+        .cursor-blink {
+            display: inline-block;
+            width: 2px;
+            height: 1.15em;
+            background-color: #0f172a;
+            vertical-align: middle;
+            margin-left: 2px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        /* Markdown 文本高对比度排版 */
+        .markdown-body {
+            color: #1e293b;
+            font-size: 0.9375rem;
+            line-height: 1.7;
+        }
+        .markdown-body p {
+            margin-bottom: 0.75rem;
+        }
+        .markdown-body strong {
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .markdown-body code {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            padding: 0.15rem 0.35rem;
+            border-radius: 0.25rem;
+            font-size: 0.875em;
+            font-family: inherit;
+            border: 1px solid #e2e8f0;
+        }
+        .markdown-body pre {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 0.85rem 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 0.75rem 0;
+        }
+        .markdown-body pre code {
+            background: none;
+            color: inherit;
+            border: none;
+            padding: 0;
+        }
+        .markdown-body ul, .markdown-body ol {
+            padding-left: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .markdown-body li {
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body class="bg-[#fcfbf9] text-ink-900 font-sans antialiased h-screen overflow-hidden flex flex-col">
+<div id="app" class="flex flex-col h-full">
+
+    <!-- 顶部极简导航栏 (参考 Claude / Antigravity 风格) -->
+    <header class="h-14 border-b border-ink-200 bg-white px-6 flex items-center justify-between z-20 flex-shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded-lg bg-ink-900 flex items-center justify-center shadow-sm">
+                <i class="fa-solid fa-shapes text-white text-xs"></i>
+            </div>
+            <div class="flex items-center">
+                <span class="font-bold text-base tracking-tight text-ink-900 font-sans">
+                    Nebula-RAG
+                </span>
+                <span class="text-xs text-ink-600 font-mono ml-2.5 px-2 py-0.5 rounded-md bg-ink-100 border border-ink-200">
+                    Self-RAG · v1.0
+                </span>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3 text-xs">
+            <!-- 状态守护徽章 -->
+            <div class="flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 font-medium">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>双自省闸门已开启 (Dual Reflection Gates)</span>
+            </div>
+            <!-- API 文档跳转 -->
+            <a href="/docs" target="_blank" class="px-3 py-1 rounded-md bg-white hover:bg-ink-50 text-ink-700 transition flex items-center space-x-1.5 border border-ink-200 shadow-sm font-medium">
+                <i class="fa-solid fa-terminal text-xs text-ink-500"></i>
+                <span>OpenAPI / Docs</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- 中部主界面 (左侧知识库面板 + 右侧会话主区) -->
+    <div class="flex flex-1 overflow-hidden">
+
+        <!-- 左侧：知识库资产与算法控制侧边栏 -->
+        <aside class="w-80 border-r border-ink-200 bg-[#f9fafb] p-4 flex flex-col space-y-4 overflow-y-auto flex-shrink-0">
+
+            <!-- 1. 文档上传卡片 -->
+            <div class="claude-card rounded-xl p-4">
+                <div class="flex items-center justify-between mb-2.5">
+                    <span class="text-xs font-bold uppercase tracking-wider text-ink-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-arrow-up text-indigo-600"></i> 文档知识注入
+                    </span>
+                    <span class="text-[11px] text-ink-500 font-mono font-medium">Parent-Child</span>
+                </div>
+
+                <!-- 拖拽上传区域 -->
+                <div 
+                    @dragover.prevent="isDragging = true" 
+                    @dragleave.prevent="isDragging = false" 
+                    @drop.prevent="handleDrop"
+                    @click="$refs.fileInput.click()"
+                    :class="{'border-indigo-500 bg-indigo-50/50': isDragging, 'border-ink-200 hover:border-indigo-400 bg-ink-50/60': !isDragging}"
+                    class="border-2 border-dashed rounded-lg p-3.5 text-center cursor-pointer transition group"
+                >
+                    <input type="file" ref="fileInput" @change="handleFileSelect" class="hidden" accept=".txt,.md,.json,.csv">
+                    <i class="fa-solid fa-cloud-arrow-up text-xl text-ink-400 group-hover:text-indigo-600 transition mb-1.5"></i>
+                    <p class="text-xs font-medium text-ink-700">点击选择或拖拽文档到此处</p>
+                    <p class="text-[11px] text-ink-400 mt-0.5">支持 .txt / .md / .json 格式</p>
+                </div>
+
+                <!-- 上传状态反馈 -->
+                <div v-if="uploadStatus" class="mt-2.5 text-xs p-2.5 rounded-lg bg-ink-50 border border-ink-200 text-ink-800 flex items-center justify-between font-medium">
+                    <span class="truncate pr-2">{{ uploadStatus }}</span>
+                    <i v-if="isUploading" class="fa-solid fa-circle-notch fa-spin text-indigo-600"></i>
+                </div>
+            </div>
+
+            <!-- 2. 系统运行时拓扑卡片 -->
+            <div class="claude-card rounded-xl p-4">
+                <div class="text-xs font-bold uppercase tracking-wider text-ink-800 flex items-center gap-1.5 mb-3">
+                    <i class="fa-solid fa-network-wired text-indigo-600"></i> 检索与索引拓扑
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-ink-50/70 p-2.5 rounded-lg border border-ink-200/80">
+                        <div class="text-[11px] text-ink-500 font-medium">已索引母块</div>
+                        <div class="text-base font-bold text-ink-900 mt-0.5 font-mono">{{ statusData.parent_documents_indexed || 0 }}</div>
+                    </div>
+                    <div class="bg-ink-50/70 p-2.5 rounded-lg border border-ink-200/80">
+                        <div class="text-[11px] text-ink-500 font-medium">稠密向量库</div>
+                        <div class="text-sm font-bold text-emerald-700 mt-1 uppercase font-mono">{{ statusData.vector_db_type || 'Qdrant' }}</div>
+                    </div>
+                    <div class="bg-ink-50/70 p-2.5 rounded-lg border border-ink-200/80">
+                        <div class="text-[11px] text-ink-500 font-medium">双路并发召回</div>
+                        <div class="text-xs font-mono font-semibold text-ink-800 mt-1">Top-20 + Top-20</div>
+                    </div>
+                    <div class="bg-ink-50/70 p-2.5 rounded-lg border border-ink-200/80">
+                        <div class="text-[11px] text-ink-500 font-medium">RRF 融合平滑</div>
+                        <div class="text-xs font-mono font-semibold text-ink-800 mt-1">k = 60</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Ragas 评测雷达大盘 -->
+            <div class="claude-card rounded-xl p-4 flex-1 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-3.5">
+                        <span class="text-xs font-bold uppercase tracking-wider text-ink-800 flex items-center gap-1.5">
+                            <i class="fa-solid fa-chart-simple text-indigo-600"></i> Ragas 评测大盘
+                        </span>
+                        <span class="text-[11px] text-indigo-700 font-mono font-semibold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">LLM-Judge</span>
+                    </div>
+
+                    <!-- 四维指标打分项 -->
+                    <div class="space-y-2.5 text-xs">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-ink-600 font-medium">忠实度 (Faithfulness)</span>
+                                <span class="font-mono font-bold text-emerald-700">{{ (evalMetrics.faithfulness * 100).toFixed(0) }}%</span>
+                            </div>
+                            <div class="w-full bg-ink-200/60 h-2 rounded-full overflow-hidden">
+                                <div class="bg-emerald-500 h-full rounded-full transition-all duration-500" :style="{ width: (evalMetrics.faithfulness * 100) + '%' }"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-ink-600 font-medium">答案相关度 (Relevancy)</span>
+                                <span class="font-mono font-bold text-indigo-700">{{ (evalMetrics.answer_relevancy * 100).toFixed(0) }}%</span>
+                            </div>
+                            <div class="w-full bg-ink-200/60 h-2 rounded-full overflow-hidden">
+                                <div class="bg-indigo-600 h-full rounded-full transition-all duration-500" :style="{ width: (evalMetrics.answer_relevancy * 100) + '%' }"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-ink-600 font-medium">上下文精准度 (Precision)</span>
+                                <span class="font-mono font-bold text-blue-700">{{ (evalMetrics.context_precision * 100).toFixed(0) }}%</span>
+                            </div>
+                            <div class="w-full bg-ink-200/60 h-2 rounded-full overflow-hidden">
+                                <div class="bg-blue-600 h-full rounded-full transition-all duration-500" :style="{ width: (evalMetrics.context_precision * 100) + '%' }"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-ink-600 font-medium">上下文召回率 (Recall)</span>
+                                <span class="font-mono font-bold text-amber-700">{{ (evalMetrics.context_recall * 100).toFixed(0) }}%</span>
+                            </div>
+                            <div class="w-full bg-ink-200/60 h-2 rounded-full overflow-hidden">
+                                <div class="bg-amber-500 h-full rounded-full transition-all duration-500" :style="{ width: (evalMetrics.context_recall * 100) + '%' }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 触发基准评测按钮 -->
+                <button 
+                    @click="triggerEvaluation" 
+                    :disabled="isEvaluating"
+                    class="mt-4 w-full py-2 px-3 rounded-lg bg-white hover:bg-ink-50 active:bg-ink-100 border border-ink-300 text-xs font-semibold text-ink-800 transition flex items-center justify-center space-x-2 shadow-sm disabled:opacity-50"
+                >
+                    <i class="fa-solid fa-play text-[10px] text-indigo-600" :class="{'fa-spin': isEvaluating}"></i>
+                    <span>{{ isEvaluating ? '正在执行量化评测...' : '在线运行 Ragas 基准评测' }}</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 右侧：核心会话交互区 (高清晰度白底 Antigravity/Claude 风格) -->
+        <main class="flex-1 flex flex-col bg-white overflow-hidden relative">
+
+            <!-- 消息滚屏区 -->
+            <div ref="chatContainer" class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
+
+                <!-- 初始欢迎卡片 -->
+                <div v-if="messages.length === 0" class="max-w-2xl mx-auto my-12 text-center space-y-4">
+                    <div class="w-14 h-14 rounded-2xl bg-ink-900 text-white flex items-center justify-center mx-auto shadow-md">
+                        <i class="fa-solid fa-brain text-2xl text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-ink-900 tracking-tight">企业自省式 Agentic RAG 智能助手</h2>
+                    <p class="text-sm text-ink-600 max-w-lg mx-auto leading-relaxed">
+                        基于 LangGraph 双重自省状态机驱动。自动执行多轮指代消解、BM25 + Qdrant 双路召回、Cross-Encoder 深度重排与事实忠实度防幻觉审计。
+                    </p>
+
+                    <!-- 预设示例提问标签 -->
+                    <div class="pt-3 flex flex-wrap gap-2 justify-center">
+                        <button 
+                            v-for="preset in presetQueries" 
+                            :key="preset" 
+                            @click="sendPreset(preset)"
+                            class="text-xs px-3.5 py-2 rounded-full bg-ink-50 hover:bg-ink-100 hover:border-indigo-400 border border-ink-200 text-ink-800 font-medium transition shadow-sm"
+                        >
+                            💡 {{ preset }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 消息气泡流 -->
+                <div v-for="(msg, index) in messages" :key="index" class="space-y-3 max-w-3xl mx-auto">
+
+                    <!-- 用户提问 (右侧深色气泡) -->
+                    <div v-if="msg.role === 'user'" class="flex justify-end">
+                        <div class="bg-ink-900 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm text-sm font-normal shadow-sm max-w-2xl leading-relaxed">
+                            {{ msg.content }}
+                        </div>
+                    </div>
+
+                    <!-- Agent 响应卡片 -->
+                    <div v-else class="flex space-x-3.5 items-start">
+                        <div class="w-8 h-8 rounded-lg bg-ink-100 border border-ink-200 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                            <i class="fa-solid fa-shield-halved text-xs text-indigo-600"></i>
+                        </div>
+
+                        <div class="flex-1 space-y-3 min-w-0">
+
+                            <!-- 1. LangGraph 自省推理时间线折叠卡片 (白底高对比度) -->
+                            <div v-if="msg.timeline && msg.timeline.length > 0" class="claude-card rounded-xl overflow-hidden">
+                                <div 
+                                    @click="msg.showTimeline = !msg.showTimeline" 
+                                    class="px-4 py-2.5 bg-ink-50/80 flex items-center justify-between cursor-pointer hover:bg-ink-100/70 transition border-b border-ink-200/60"
+                                >
+                                    <div class="flex items-center space-x-2 text-xs">
+                                        <i class="fa-solid fa-route text-indigo-600"></i>
+                                        <span class="font-bold text-ink-800">LangGraph 自省执行时间线</span>
+                                        <span class="text-xs text-ink-500 font-mono">({{ msg.timeline.length }} 个节点已调度)</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-down text-ink-500 text-xs transition-transform" :class="{'rotate-180': msg.showTimeline}"></i>
+                                </div>
+
+                                <div v-show="msg.showTimeline" class="p-3.5 bg-white space-y-2.5 text-xs">
+                                    <div v-for="(step, sIdx) in msg.timeline" :key="sIdx" class="flex items-start space-x-3">
+                                        <div class="w-2 h-2 rounded-full bg-indigo-600 mt-1.5 flex-shrink-0"></div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="font-semibold text-ink-900 flex items-center gap-2">
+                                                <span>{{ step.title || step.step }}</span>
+                                                <span v-if="step.grade" class="px-2 py-0.5 rounded text-[11px] uppercase font-mono font-bold" :class="step.grade === 'relevant' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'">
+                                                    {{ step.grade }}
+                                                </span>
+                                                <span v-if="step.passed !== undefined" class="px-2 py-0.5 rounded text-[11px] uppercase font-mono font-bold" :class="step.passed ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'">
+                                                    {{ step.passed ? 'PASS' : 'FAIL' }}
+                                                </span>
+                                            </div>
+                                            <p v-if="step.detail" class="text-xs text-ink-600 mt-0.5 leading-relaxed font-normal">{{ step.detail }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. 正式回答文本区 (高清晰度字体排版) -->
+                            <div class="claude-card rounded-2xl p-5 shadow-sm">
+                                <div class="markdown-body" v-html="renderMarkdown(msg.content)"></div>
+                                <span v-if="msg.isStreaming" class="cursor-blink"></span>
+                            </div>
+
+                            <!-- 3. 证据溯源卡片标签 (Citations) -->
+                            <div v-if="msg.citations && msg.citations.length > 0" class="flex flex-wrap gap-2 pt-0.5">
+                                <div 
+                                    v-for="cite in msg.citations" 
+                                    :key="cite.index"
+                                    @click="openCitationModal(cite)"
+                                    class="text-xs px-3 py-1.5 rounded-lg bg-white hover:bg-ink-50 border border-ink-200 text-ink-800 hover:text-indigo-600 cursor-pointer transition flex items-center space-x-1.5 shadow-sm group"
+                                >
+                                    <span class="font-mono text-indigo-600 font-bold">[{{ cite.index }}]</span>
+                                    <span class="truncate max-w-[160px] font-medium">{{ cite.doc_name }}</span>
+                                    <span class="text-xs text-emerald-700 font-mono font-semibold">({{ cite.relevance_score }})</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-ink-400 group-hover:text-indigo-600"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- 底部居中提问输入框 -->
+            <footer class="p-4 md:p-5 border-t border-ink-200 bg-white/95 backdrop-blur z-20">
+                <div class="max-w-3xl mx-auto">
+                    <form @submit.prevent="sendMessage" class="relative flex items-center shadow-sm rounded-xl">
+                        <textarea 
+                            v-model="inputQuery" 
+                            @keydown.enter.exact.prevent="sendMessage"
+                            rows="1"
+                            placeholder="询问关于知识库的任何专业问题... (Enter 发送, Shift+Enter 换行)"
+                            class="w-full bg-[#f8fafc] text-ink-900 placeholder-ink-400 text-sm rounded-xl pl-4 pr-24 py-3.5 border border-ink-300 focus:border-indigo-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-100 resize-none transition"
+                        ></textarea>
+                        <button 
+                            type="submit" 
+                            :disabled="!inputQuery.trim() || isStreaming"
+                            class="absolute right-2 px-4 py-2 rounded-lg bg-ink-900 hover:bg-ink-800 active:bg-black disabled:opacity-40 text-white text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm"
+                        >
+                            <i v-if="isStreaming" class="fa-solid fa-circle-notch fa-spin text-xs"></i>
+                            <i v-else class="fa-solid fa-arrow-up text-xs"></i>
+                            <span>{{ isStreaming ? '思考中' : '发送' }}</span>
+                        </button>
+                    </form>
+                    <div class="flex items-center justify-between text-xs text-ink-500 mt-2 px-1">
+                        <span>支持多轮指代消解 · 自动过滤弱相关噪声</span>
+                        <span>端到端事实核查 · 防幻觉自审</span>
+                    </div>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- 证据溯源弹窗 (Citation Detail Modal) -->
+    <div v-if="selectedCitation" class="fixed inset-0 bg-ink-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white border border-ink-200 rounded-2xl max-w-xl w-full p-6 shadow-2xl relative animate-fade-in">
+            <button @click="selectedCitation = null" class="absolute top-4 right-4 text-ink-400 hover:text-ink-800 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="flex items-center space-x-2 text-indigo-600 mb-2">
+                <i class="fa-solid fa-quote-left text-sm"></i>
+                <span class="text-xs font-bold uppercase tracking-wider">原始证据片段溯源 [{{ selectedCitation.index }}]</span>
+            </div>
+            <h3 class="text-base font-bold text-ink-900 mb-1.5">{{ selectedCitation.doc_name }}</h3>
+            <div class="flex items-center space-x-4 text-xs text-ink-600 mb-3.5">
+                <span>重排置信度: <strong class="text-emerald-700 font-mono font-bold">{{ selectedCitation.relevance_score }}</strong></span>
+                <span v-if="selectedCitation.metadata && selectedCitation.metadata.file_size">文件大小: {{ selectedCitation.metadata.file_size }} 字节</span>
+            </div>
+            <div class="bg-ink-50 p-4 rounded-xl border border-ink-200 text-xs text-ink-800 leading-relaxed font-mono max-h-64 overflow-y-auto">
+                {{ selectedCitation.snippet }}
+            </div>
+            <div class="mt-5 flex justify-end">
+                <button @click="selectedCitation = null" class="px-4 py-2 rounded-lg bg-ink-100 hover:bg-ink-200 text-xs font-medium text-ink-800 transition">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Vue 3 交互逻辑 -->
+<script>
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    createApp({
+        setup() {
+            const inputQuery = ref('');
+            const isStreaming = ref(false);
+            const isDragging = ref(false);
+            const isUploading = ref(false);
+            const isEvaluating = ref(false);
+            const uploadStatus = ref('');
+            const chatContainer = ref(null);
+            const selectedCitation = ref(null);
+
+            const statusData = ref({});
+            const evalMetrics = ref({
+                faithfulness: 0.92,
+                answer_relevancy: 0.90,
+                context_precision: 0.88,
+                context_recall: 0.89
+            });
+
+            const messages = ref([]);
+            const presetQueries = ref([
+                '天琴系统的切片参数与架构是怎样的？',
+                '它的排序融合算法采用了什么？',
+                '如果知识库中没有这个内容，系统会如何处理？'
+            ]);
+
+            // 格式化 Markdown
+            const renderMarkdown = (text) => {
+                if (!text) return '';
+                return marked.parse(text);
+            };
+
+            // 获取知识库后台健康状态
+            const fetchStatus = async () => {
+                try {
+                    const res = await fetch('/api/v1/rag/status');
+                    if (res.ok) {
+                        statusData.value = await res.json();
+                    }
+                } catch (e) {
+                    console.error('获取系统状态失败', e);
+                }
+            };
+
+            const scrollToBottom = () => {
+                nextTick(() => {
+                    if (chatContainer.value) {
+                        chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+                    }
+                });
+            };
+
+            // 处理文件上传
+            const uploadFile = async (file) => {
+                if (!file) return;
+                isUploading.value = true;
+                uploadStatus.value = `正在切分并构建索引: ${file.name}...`;
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const res = await fetch('/api/v1/rag/documents/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        uploadStatus.value = `成功构建 ${data.parent_chunks} 个母块, ${data.child_chunks} 个子块！`;
+                        await fetchStatus();
+                    } else {
+                        uploadStatus.value = `上传失败: ${data.detail || '未知错误'}`;
+                    }
+                } catch (err) {
+                    uploadStatus.value = `网络异常: ${err.message}`;
+                } finally {
+                    isUploading.value = false;
+                }
+            };
+
+            const handleFileSelect = (e) => {
+                const file = e.target.files[0];
+                uploadFile(file);
+            };
+
+            const handleDrop = (e) => {
+                isDragging.value = false;
+                const file = e.dataTransfer.files[0];
+                uploadFile(file);
+            };
+
+            // 触发基准评测
+            const triggerEvaluation = async () => {
+                isEvaluating.value = true;
+                try {
+                    const res = await fetch('/api/v1/rag/evaluation/run', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({})
+                    });
+                    const data = await res.json();
+                    if (res.ok && data.report_summary && data.report_summary.average_metrics) {
+                        evalMetrics.value = data.report_summary.average_metrics;
+                        alert('Ragas 四维基准评测已完成！最新量化雷达数据已刷新。');
+                    }
+                } catch (e) {
+                    alert('评测执行异常: ' + e.message);
+                } finally {
+                    isEvaluating.value = false;
+                }
+            };
+
+            // 发送消息并流式接收 SSE 事件
+            const sendMessage = async () => {
+                const query = inputQuery.value.trim();
+                if (!query || isStreaming.value) return;
+
+                inputQuery.value = '';
+                // 1. 用户消息
+                messages.value.push({ role: 'user', content: query });
+
+                // 2. 占位 Assistant 响应
+                const assistantMsg = {
+                    role: 'assistant',
+                    content: '',
+                    isStreaming: true,
+                    timeline: [],
+                    citations: [],
+                    showTimeline: true
+                };
+                messages.value.push(assistantMsg);
+                isStreaming.value = true;
+                scrollToBottom();
+
+                try {
+                    const response = await fetch('/api/v1/rag/chat/stream', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            query: query,
+                            session_id: 'web_session_01',
+                            chat_history: []
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder('utf-8');
+                    let buffer = '';
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+
+                        buffer += decoder.decode(value, { stream: true });
+                        const lines = buffer.split('\n');
+                        buffer = lines.pop();
+
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                const jsonStr = line.slice(6).trim();
+                                if (!jsonStr) continue;
+
+                                try {
+                                    const event = JSON.parse(jsonStr);
+
+                                    // 处理状态机步骤流转
+                                    if (event.type === 'step') {
+                                        assistantMsg.timeline.push(event);
+                                    } 
+                                    // 处理打字机 Token
+                                    else if (event.type === 'token') {
+                                        assistantMsg.content += event.content;
+                                    } 
+                                    // 处理证据引用
+                                    else if (event.type === 'citations') {
+                                        assistantMsg.citations = event.data;
+                                    } 
+                                    // 传输完成
+                                    else if (event.type === 'done') {
+                                        assistantMsg.isStreaming = false;
+                                    }
+                                    scrollToBottom();
+                                } catch (e) {
+                                    console.error('SSE JSON 解析错误', e);
+                                }
+                            }
+                        }
+                    }
+                } catch (err) {
+                    assistantMsg.content = `【请求异常】: ${err.message}`;
+                    assistantMsg.isStreaming = false;
+                } finally {
+                    assistantMsg.isStreaming = false;
+                    isStreaming.value = false;
+                    scrollToBottom();
+                }
+            };
+
+            const sendPreset = (q) => {
+                inputQuery.value = q;
+                sendMessage();
+            };
+
+            const openCitationModal = (cite) => {
+                selectedCitation.value = cite;
+            };
+
+            onMounted(() => {
+                fetchStatus();
+            });
+
+            return {
+                inputQuery,
+                isStreaming,
+                isDragging,
+                isUploading,
+                isEvaluating,
+                uploadStatus,
+                statusData,
+                evalMetrics,
+                messages,
+                presetQueries,
+                chatContainer,
+                selectedCitation,
+                renderMarkdown,
+                handleFileSelect,
+                handleDrop,
+                triggerEvaluation,
+                sendMessage,
+                sendPreset,
+                openCitationModal
+            };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
