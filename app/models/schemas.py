@@ -106,6 +106,7 @@ class ChatQueryResponse(BaseModel):
     citations: List[CitationReference] = Field(default_factory=list, description="证据可溯源引用列表")
     latency_ms: float = Field(default=0.0, description="端到端全链路总耗时(毫秒)")
     steps_timeline: List[Dict[str, Any]] = Field(default_factory=list, description="可解释性推理步骤时间线")
+    quality: Dict[str, Any] = Field(default_factory=dict, description="质量摘要：检索评级、审计结论、是否兜底、重试次数 (AGENT-6)")
 
 
 # =============================================================================
@@ -113,10 +114,10 @@ class ChatQueryResponse(BaseModel):
 # =============================================================================
 
 class RagasEvaluationMetrics(BaseModel):
-    """RAG 四维黄金评估指标 (取值均为 0.0 ~ 1.0)"""
+    """旧版四维评估指标（仅旧版评测器使用，取值 0.0 ~ 1.0）"""
     context_recall: float = Field(..., description="召回率：真实参考答案需要的证据是否找全了")
     context_precision: float = Field(..., description="精准度：最关键有用的证据是否排在最前列")
     faithfulness: float = Field(..., description="忠实度：生成的答案是否完全由检索材料支撑(防幻觉)")
     answer_relevancy: float = Field(..., description="相关度：生成的答案是否精准回答了用户的问题")
-    overall_score: float = Field(..., description="四项综合调和平均分")
+    overall_score: float = Field(..., description="四项的加权算术平均（0.30/0.25/0.25/0.20，权重无依据，仅旧版评测器使用）")
     evaluated_at: float = Field(default_factory=time.time)

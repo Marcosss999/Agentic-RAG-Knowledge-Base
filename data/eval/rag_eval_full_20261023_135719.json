@@ -1,0 +1,2427 @@
+{
+  "name": "kb_eval_v1",
+  "dataset_sha256": "ec239b5a0be1f360",
+  "timestamp": "2026-10-23 13:57:19",
+  "mode": "full",
+  "embedding_signature": "api:https://dashscope.aliyuncs.com/compatible-mode/v1:text-embedding-v4",
+  "llm_model": "deepseek-chat",
+  "reranker_model": "gte-rerank-v2",
+  "warnings": [
+    "评测集由 Claude 根据文档起草、规模较小（约 40 题），需人工复核；判官与被测系统可能是同一模型，存在自评偏差。"
+  ],
+  "retrieval": {
+    "k": 5,
+    "baseline": "hybrid_rerank",
+    "n_answerable": 37,
+    "n_unanswerable": 6,
+    "configs": [
+      {
+        "name": "dense_only",
+        "label": "只用向量",
+        "hit@1": 0.7297297297297297,
+        "hit@3": 0.9459459459459459,
+        "hit@5": 0.972972972972973,
+        "mrr": 0.8355855855855856,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.6538461538461539,
+            "hit@3": 0.9230769230769231,
+            "hit@5": 0.9615384615384616,
+            "mrr": 0.7852564102564104,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.8,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 0.9,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "dense_only",
+          "label": "只用向量",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.0,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            0.01126126126126126,
+            -0.07882882882882884,
+            0.0945945945945946
+          ],
+          "hit@5": [
+            0.05405405405405406,
+            -0.05405405405405406,
+            0.16216216216216217
+          ]
+        }
+      },
+      {
+        "name": "bm25_only",
+        "label": "只用 BM25",
+        "hit@1": 0.5405405405405406,
+        "hit@3": 0.7027027027027027,
+        "hit@5": 0.8378378378378378,
+        "mrr": 0.6423423423423423,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.5384615384615384,
+            "hit@3": 0.7692307692307693,
+            "hit@5": 0.8846153846153846,
+            "mrr": 0.666025641025641,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.0,
+            "hit@3": 0.0,
+            "hit@5": 0.4,
+            "mrr": 0.09,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "bm25_only",
+          "label": "只用 BM25",
+          "dense_weight": 0.0,
+          "sparse_weight": 1.0,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.18198198198198198,
+            -0.32882882882882886,
+            -0.02117117117117118
+          ],
+          "hit@5": [
+            -0.08108108108108109,
+            -0.21621621621621623,
+            0.02702702702702703
+          ]
+        }
+      },
+      {
+        "name": "hybrid_1_0.8",
+        "label": "融合 1:0.8（原默认）",
+        "hit@1": 0.6216216216216216,
+        "hit@3": 0.918918918918919,
+        "hit@5": 0.9459459459459459,
+        "mrr": 0.7545045045045046,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.5769230769230769,
+            "hit@3": 0.9230769230769231,
+            "hit@5": 0.9615384615384616,
+            "mrr": 0.7339743589743589,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.4,
+            "hit@3": 0.8,
+            "hit@5": 0.8,
+            "mrr": 0.5666666666666667,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_1_0.8",
+          "label": "融合 1:0.8（原默认）",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.8,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.06981981981981983,
+            -0.17342342342342343,
+            0.0472972972972973
+          ],
+          "hit@5": [
+            0.02702702702702703,
+            -0.05405405405405406,
+            0.10810810810810811
+          ]
+        }
+      },
+      {
+        "name": "hybrid_1_1",
+        "label": "融合 1:1",
+        "hit@1": 0.6216216216216216,
+        "hit@3": 0.8918918918918919,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.7454954954954954,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.5769230769230769,
+            "hit@3": 0.9230769230769231,
+            "hit@5": 0.9230769230769231,
+            "mrr": 0.7243589743589743,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.4,
+            "hit@3": 0.6,
+            "hit@5": 0.8,
+            "mrr": 0.55,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_1_1",
+          "label": "融合 1:1",
+          "dense_weight": 1.0,
+          "sparse_weight": 1.0,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.07882882882882884,
+            -0.18243243243243243,
+            0.038288288288288286
+          ],
+          "hit@5": [
+            0.0,
+            -0.08108108108108109,
+            0.08108108108108109
+          ]
+        }
+      },
+      {
+        "name": "hybrid_0.8_1",
+        "label": "融合 0.8:1（BM25 稍重）",
+        "hit@1": 0.5945945945945946,
+        "hit@3": 0.8918918918918919,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.7306306306306307,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.5769230769230769,
+            "hit@3": 0.9230769230769231,
+            "hit@5": 0.9230769230769231,
+            "mrr": 0.7243589743589743,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.2,
+            "hit@3": 0.6,
+            "hit@5": 0.8,
+            "mrr": 0.44000000000000006,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_0.8_1",
+          "label": "融合 0.8:1（BM25 稍重）",
+          "dense_weight": 0.8,
+          "sparse_weight": 1.0,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.0936936936936937,
+            -0.19909909909909912,
+            0.027027027027027025
+          ],
+          "hit@5": [
+            0.0,
+            -0.08108108108108109,
+            0.08108108108108109
+          ]
+        }
+      },
+      {
+        "name": "hybrid_rerank",
+        "label": "融合 1:0.8 + 重排（线上配置）",
+        "hit@1": 0.7567567567567568,
+        "hit@3": 0.8648648648648649,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.8243243243243243,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.6923076923076923,
+            "hit@3": 0.8076923076923077,
+            "hit@5": 0.8846153846153846,
+            "mrr": 0.7692307692307693,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.8,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 0.9,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_rerank",
+          "label": "融合 1:0.8 + 重排（线上配置）",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.8,
+          "rerank": true,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "hit@5": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      {
+        "name": "hybrid_rerank_mq",
+        "label": "线上配置 + 多查询扩展",
+        "hit@1": 0.7567567567567568,
+        "hit@3": 0.8648648648648649,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.8243243243243243,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.6923076923076923,
+            "hit@3": 0.8076923076923077,
+            "hit@5": 0.8846153846153846,
+            "mrr": 0.7692307692307693,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.8,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 0.9,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_rerank_mq",
+          "label": "线上配置 + 多查询扩展",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.8,
+          "rerank": true,
+          "multi_query": true,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "hit@5": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      {
+        "name": "hybrid_rerank_hyde",
+        "label": "线上配置 + HyDE",
+        "hit@1": 0.7567567567567568,
+        "hit@3": 0.8378378378378378,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.8162162162162162,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.6923076923076923,
+            "hit@3": 0.7692307692307693,
+            "hit@5": 0.8846153846153846,
+            "mrr": 0.7576923076923077,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.8,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 0.9,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_rerank_hyde",
+          "label": "线上配置 + HyDE",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.8,
+          "rerank": true,
+          "multi_query": false,
+          "hyde": true
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.008108108108108109,
+            -0.024324324324324322,
+            0.0
+          ],
+          "hit@5": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    ],
+    "per_question": [
+      {
+        "id": "p01",
+        "question": "In LLaMA2-7B, which two feature dimensions contain massive activations?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p02",
+        "question": "Which feature dimensions hold massive activations in LLaMA2-13B, and at which tokens?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 2,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p03",
+        "question": "Which feature dimensions contain massive activations in Mixtral-8x7B?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p04",
+        "question": "In LLaMA2-7B, in which layer do massive activations first appear and until which layer do they stay nearly constant?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p05",
+        "question": "What loose definition does the paper give for a massive activation?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p06",
+        "question": "What happens to LLaMA2-7B when its massive activations are set to zero?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 4,
+          "hybrid_rerank_mq": 4,
+          "hybrid_rerank_hyde": 4
+        }
+      },
+      {
+        "id": "p07",
+        "question": "What is the effect of setting massive activations to their mean values?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p08",
+        "question": "How do massive activations differ conceptually from outlier features?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 3,
+          "hybrid_0.8_1": 3,
+          "hybrid_rerank": 2,
+          "hybrid_rerank_mq": 2,
+          "hybrid_rerank_hyde": 2
+        }
+      },
+      {
+        "id": "p09",
+        "question": "How many outlier features did the authors find in LLaMA2-7B and LLaMA2-13B, and do they overlap with massive activation dimensions?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p10",
+        "question": "According to Table 1, what is the top-1 activation magnitude in Mixtral-8x7B?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 2,
+          "hybrid_rerank_mq": 2,
+          "hybrid_rerank_hyde": 2
+        }
+      },
+      {
+        "id": "p11",
+        "question": "What data did the authors use to locate massive activations across layers?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": null,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 3,
+          "hybrid_0.8_1": 3,
+          "hybrid_rerank": 2,
+          "hybrid_rerank_mq": 2,
+          "hybrid_rerank_hyde": 5
+        }
+      },
+      {
+        "id": "p12",
+        "question": "Why might massive activations appear at the starting token?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 4,
+          "bm25_only": null,
+          "hybrid_1_0.8": 4,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "p13",
+        "question": "Why might LLMs store these biases in delimiter tokens?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p14",
+        "question": "In LLaMA2-7B, from which layer is attention concentrated on the tokens with massive activations?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 3,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "p15",
+        "question": "What normalization variant does LLaMA2 use?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 3,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p16",
+        "question": "What do the value updates from the tokens with massive activations look like across different tokens?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p17",
+        "question": "How do the authors add explicit attention biases to self-attention?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 3,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "p18",
+        "question": "Which three GPT-2 variants were trained in the explicit attention bias experiment?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": 3,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p19",
+        "question": "Do massive activations appear in GPT-2 trained with explicit attention biases?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 2,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 4,
+          "hybrid_rerank_mq": 4,
+          "hybrid_rerank_hyde": 4
+        }
+      },
+      {
+        "id": "p20",
+        "question": "Which ViT-L models exhibit massive activations and which do not?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": 2,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p21",
+        "question": "What is observed in MAE ViT-L instead of massive activations?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 4,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p22",
+        "question": "At which layer was the intervention on CLIP ViT-L performed?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p23",
+        "question": "Where do massive activations appear in DINOv2-reg ViT-G?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 5,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 3,
+          "hybrid_0.8_1": 3,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p24",
+        "question": "What is the ImageNet accuracy of DINOv2-reg ViT-G before and after fixing register features to their means?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 2,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p25",
+        "question": "What practical implication does the paper mention for model quantization?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 5,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p26",
+        "question": "Why were the explicit attention bias experiments limited to a small GPT-2?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 3,
+          "hybrid_0.8_1": 3,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "x01",
+        "question": "LLaMA2-7B 中的大规模激活（massive activations）出现在哪两个特征维度？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 4,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "x02",
+        "question": "把大规模激活置零会对 LLaMA2-7B 造成什么影响？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": 2,
+          "hybrid_rerank_mq": 2,
+          "hybrid_rerank_hyde": 2
+        }
+      },
+      {
+        "id": "x03",
+        "question": "这篇论文发表在哪个会议？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": null,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "x04",
+        "question": "MAE ViT-L 中有没有观察到大规模激活？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 5,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "x05",
+        "question": "为什么作者认为大规模激活起到了偏置项（bias）的作用？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": null,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 4,
+          "hybrid_0.8_1": 5,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t01",
+        "question": "差旅报销需要提交哪些材料？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t02",
+        "question": "出差结束后多久内要提交报销？逾期怎么办？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t03",
+        "question": "一线城市的住宿报销标准是多少？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t04",
+        "question": "出差伙食补助是多少？需要发票吗？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t05",
+        "question": "没走审批就出差，费用能报销吗？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t06",
+        "question": "报销款多久能到账？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "u01",
+        "question": "公司股票期权怎么行权？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u02",
+        "question": "加班费怎么计算？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u03",
+        "question": "国际出差的住宿标准是多少？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u04",
+        "question": "差旅报销可以用支付宝收款吗？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u05",
+        "question": "Does the paper study massive activations in Google's Gemini models?",
+        "lang": "en",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u06",
+        "question": "这篇论文用了多少块 GPU 训练 LLaMA2-70B？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      }
+    ],
+    "threshold_analysis": {
+      "current_threshold": 0.15,
+      "grid": [
+        {
+          "threshold": 0.0,
+          "answerable_hit@5": 0.918918918918919,
+          "unanswerable_filtered": 0.0
+        },
+        {
+          "threshold": 0.05,
+          "answerable_hit@5": 0.8918918918918919,
+          "unanswerable_filtered": 0.16666666666666666
+        },
+        {
+          "threshold": 0.1,
+          "answerable_hit@5": 0.8918918918918919,
+          "unanswerable_filtered": 0.3333333333333333
+        },
+        {
+          "threshold": 0.15,
+          "answerable_hit@5": 0.8918918918918919,
+          "unanswerable_filtered": 0.3333333333333333
+        },
+        {
+          "threshold": 0.2,
+          "answerable_hit@5": 0.8648648648648649,
+          "unanswerable_filtered": 0.8333333333333334
+        },
+        {
+          "threshold": 0.3,
+          "answerable_hit@5": 0.8648648648648649,
+          "unanswerable_filtered": 0.8333333333333334
+        },
+        {
+          "threshold": 0.4,
+          "answerable_hit@5": 0.8108108108108109,
+          "unanswerable_filtered": 1.0
+        },
+        {
+          "threshold": 0.5,
+          "answerable_hit@5": 0.7027027027027027,
+          "unanswerable_filtered": 1.0
+        },
+        {
+          "threshold": 0.6,
+          "answerable_hit@5": 0.6486486486486487,
+          "unanswerable_filtered": 1.0
+        }
+      ],
+      "relevant_top_score": {
+        "n": 34,
+        "min": 0.0295,
+        "median": 0.7885,
+        "max": 0.9538
+      },
+      "unanswerable_top_score": {
+        "n": 6,
+        "min": 0.0061,
+        "median": 0.1852,
+        "max": 0.3845
+      }
+    }
+  },
+  "end_to_end": {
+    "n": 43,
+    "summary": {
+      "correctness": 0.9594594594594594,
+      "fully_correct_rate": 0.918918918918919,
+      "faithfulness": 1.0,
+      "refusal_accuracy": 1.0,
+      "false_fallback_rate": 0.0,
+      "retrieved_relevant_rate": 0.9459459459459459,
+      "judge_agreement": 1.0,
+      "audit_status_counts": {
+        "pass": 37,
+        "skipped": 6
+      },
+      "latency_s_median": 3.86,
+      "system_llm_calls_mean": 3.372093023255814
+    },
+    "rows": [
+      {
+        "id": "p01",
+        "question": "In LLaMA2-7B, which two feature dimensions contain massive activations?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "In LLaMA2-7B, massive activations are identified in two feature dimensions: 1415 and 2533 [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料明确指出LLaMA2-7B中大量激活出现在两个特征维度1415和2533。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "In LLaMA2-7B, which two feature dimensions contain massive activations?"
+        },
+        "latency_s": 5.35,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p02",
+        "question": "Which feature dimensions hold massive activations in LLaMA2-13B, and at which tokens?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "LLaMA2-13B 中的 massive activations 出现在两个特征维度：2100 和 4743 [1][2]。在序列维度上，它们仅位于序列的起始 token，无论该 token 的语义如何 [1][2]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states that LLaMA2-13B has massive activations in feature dimensions 2100 and 4743, located at the starting token of the sequence.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "Which feature dimensions hold massive activations in LLaMA2-13B, and at which tokens?"
+        },
+        "latency_s": 3.98,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p03",
+        "question": "Which feature dimensions contain massive activations in Mixtral-8x7B?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "In Mixtral-8x7B, massive activations lie in two feature dimensions: 2070 and 3398 [1][2].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states that in Mixtral-8x7B massive activations lie in two feature dimensions, 2070 and 3398.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "Which feature dimensions contain massive activations in Mixtral-8x7B?"
+        },
+        "latency_s": 3.86,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p04",
+        "question": "In LLaMA2-7B, in which layer do massive activations first appear and until which layer do they stay nearly constant?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "In LLaMA2-7B, massive activations first appear in layer 2 and remain nearly constant values until layer 30 [1][2].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "参考资料明确指出在LLaMA2-7B中，大规模激活首次出现在第2层，并保持近乎恒定值直到第30层，直接回答了问题。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "In LLaMA2-7B, in which layer do massive activations first appear and until which layer do they stay nearly constant?"
+        },
+        "latency_s": 6.93,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p05",
+        "question": "What loose definition does the paper give for a massive activation?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "The paper gives the following loose but broad definition: an activation qualifies as a massive activation if its magnitude surpasses 100 and is at least or around 1,000 times larger than the median magnitude of its hidden state [1]. The authors find this criterion effectively identifies these activations of interest across various LLMs [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The first document explicitly provides the paper's loose definition: an activation qualifies as massive if its magnitude surpasses 100 and is at least or around 1,000 times larger than the median magnitude of its hidden state.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "What loose definition does the paper give for a massive activation?"
+        },
+        "latency_s": 3.9,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p06",
+        "question": "What happens to LLaMA2-7B when its massive activations are set to zero?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "When LLaMA2-7B's massive activations are set to zero, the model suffers a catastrophic collapse in performance: perplexity becomes infinite (inf) on WikiText, C4, and PG-19, and zero-shot accuracy drops to 36.75% (from 68.95% originally) [4]. The paper also notes that setting merely four massive activations (out of millions) to zero would result in catastrophic collapse in model performance [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states that setting four massive activations to zero in LLaMA2-7B causes catastrophic collapse in model performance, and Table 3 shows infinite perplexity and reduced zero-shot accuracy.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "What happens to LLaMA2-7B when its massive activations are set to zero?"
+        },
+        "latency_s": 4.32,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p07",
+        "question": "What is the effect of setting massive activations to their mean values?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "Setting massive activations to their mean values produces negligible changes in perplexity and zero-shot accuracy [1]. The means are computed on 100 sequences from RedPajama [1]. This indicates that their values are constants and input agnostic, functioning similarly to bias terms [1].\n\nIn the intervention analysis on LLaMA2-7B and LLaMA2-13B, the \"Set to mean\" results are as follows [4]:\n- LLaMA2-7B: WikiText 5.47, C4 7.86, PG-19 8.59, Mean Zero-Shot 68.94% (vs. Original 5.47 / 7.85 / 8.57 / 68.95%)\n- LLaMA2-13B: WikiText 4.88, C4 7.22, PG-19 7.16, Mean Zero-Shot 71.92% (vs. Original 4.88 / 7.22 / 7.16 / 71.94%)",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states that setting massive activations to their mean values results in negligible changes in perplexity and zero-shot accuracy, indicating they function like fixed bias terms.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "What is the effect of setting massive activations to their mean values?"
+        },
+        "latency_s": 5.2,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p08",
+        "question": "How do massive activations differ conceptually from outlier features?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "Massive activations differ conceptually from outlier features in the following ways:\n\n- A massive activation is a scalar value, determined jointly by the sequence and feature dimensions; in contrast, an outlier feature is a vector, corresponding to activations at all tokens [2].\n- Massive activations are present at extremely few tokens, while outlier features expect most activations in them to be large [2][3].\n- In practice, massive activations do not overlap with outlier feature dimensions; in LLaMA2-7B and 13B, none of the identified outlier features correspond to the feature dimensions of massive activations [3].\n- Massive activations cannot be attributed to the existence of outlier features [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly contrasts massive activations (scalar values at few tokens) with outlier features (vectors with large magnitudes across most tokens) and notes they do not overlap.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "How do massive activations differ conceptually from outlier features?"
+        },
+        "latency_s": 4.21,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p09",
+        "question": "How many outlier features did the authors find in LLaMA2-7B and LLaMA2-13B, and do they overlap with massive activation dimensions?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "The authors found 10 outlier features in LLaMA2-7B and 25 outlier features in LLaMA2-13B [1]. None of these outlier features correspond to the feature dimensions of massive activations [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The document states 10 and 25 outlier features were found in LLaMA2-7B and 13B respectively, and that none overlap with massive activation dimensions.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "How many outlier features did the authors find in LLaMA2-7B and LLaMA2-13B, and do they overlap with massive activation dimensions?"
+        },
+        "latency_s": 4.53,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p10",
+        "question": "According to Table 1, what is the top-1 activation magnitude in Mixtral-8x7B?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "According to Table 1, the top-1 activation magnitude in Mixtral-8x7B is 7100.0 [2].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "Table 1 in the reference explicitly lists Mixtral-8x7B's Top 1 activation magnitude as 7100.0, directly answering the question.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "According to Table 1, what is the top-1 activation magnitude in Mixtral-8x7B?"
+        },
+        "latency_s": 4.32,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p11",
+        "question": "What data did the authors use to locate massive activations across layers?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "The authors used 100 sequences (each with 4,096 tokens) collected from RedPajama, running the LLMs on these sequences and collecting the hidden states from each layer [2].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference states the authors collected 100 sequences of 4,096 tokens from RedPajama and ran LLMs on them to collect hidden states from each layer to locate massive activations across layers.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "What data did the authors use to locate massive activations across layers?"
+        },
+        "latency_s": 3.87,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p12",
+        "question": "Why might massive activations appear at the starting token?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "Massive activations may appear at the starting token because every autoregressive training instance contains an initial token, and since LLMs are based on next-word prediction, the starting token is the only token used in all forward passes within a sequence [4]. Additionally, the existence of these activations in delimiter tokens might be due to the relatively low semantic value of these tokens, making them a low-cost option for storing biases, whereas tokens with rich semantics would risk significant loss of input information if repurposed to store biases [4]. The fact that massive activations emerge only after a few initial layers may be because LLMs require some initial layers to process the meaning of the tokens associated with massive activations; at these layers, their semantics may be transferred to other token positions via self-attention and preserved moving forward [4].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料明确指出起始token是唯一在所有前向传播中使用的token，且其低语义价值使其成为存储偏置的低成本选择，直接回答了为何大规模激活出现在起始token。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 1,
+          "generation_retries": 0,
+          "resolved_query": "Why might massive activations appear at the starting token?"
+        },
+        "latency_s": 14.62,
+        "system_llm_calls": 5,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p13",
+        "question": "Why might LLMs store these biases in delimiter tokens?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "According to the reference materials, the existence of these activations in delimiter tokens might be due to the relatively low semantic value of these tokens, rendering them a low-cost option for storing such biases. Conversely, tokens with rich semantics would risk significant loss of input information if they are repurposed to store biases [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料明确指出分隔符标记语义价值低，因此是存储偏置的低成本选择，直接回答了问题。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "Why might LLMs store these biases in delimiter tokens?"
+        },
+        "latency_s": 3.19,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p14",
+        "question": "In LLaMA2-7B, from which layer is attention concentrated on the tokens with massive activations?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "In LLaMA2-7B, massive activations first appear in layer 2 and remain nearly constant until layer 30 [2]. The attention concentration on the tokens with massive activations is illustrated for LLaMA2-7B in Layer 2 and Layer 3 (as well as Layer 31) in Figure 5 [1]. However, the资料 does not explicitly state a single layer from which attention begins to concentrate on massive-activation tokens; it only shows the attention patterns before and after massive activations appear, with Layer 2 being where massive activations first emerge [1][2].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料明确指出LLaMA2-7B的massive activations从第2层开始出现，且图5展示了第2层及之后注意力集中于这些token的模式，足以回答从哪一层开始。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 1,
+          "generation_retries": 0,
+          "resolved_query": "In LLaMA2-7B, from which layer is attention concentrated on the tokens with massive activations?"
+        },
+        "latency_s": 12.13,
+        "system_llm_calls": 5,
+        "retrieved_relevant": false,
+        "correctness_verdicts": [
+          "partial",
+          "partial"
+        ],
+        "correctness": 0.5,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p15",
+        "question": "What normalization variant does LLaMA2 use?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "LLaMA2 uses a variant of layer normalization called RMSNorm (Root Mean Square Normalization) [1][2][3].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states that LLaMA2 uses RMSNorm, a variant of layer normalization.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "What normalization variant does LLaMA2 use?"
+        },
+        "latency_s": 2.8,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p16",
+        "question": "What do the value updates from the tokens with massive activations look like across different tokens?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "The value updates from the tokens associated with massive activations are essentially the same across all tokens — they serve as additive bias terms, although not explicitly imposed [1]. This pattern of value update is also strikingly similar across various inputs [1]. In the same layer, the value updates from the set C display remarkable similarity across different input sequences [2].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The documents explicitly state and visualize that value updates from tokens with massive activations are nearly identical across different tokens, acting as additive bias terms.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "What do the value updates from the tokens with massive activations look like across different tokens?"
+        },
+        "latency_s": 3.7,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p17",
+        "question": "How do the authors add explicit attention biases to self-attention?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "The authors propose directly augmenting self-attention with additional bias terms, modeling the attention biases explicitly rather than repurposing existing patterns [1]. Specifically, they experiment with augmenting self-attention with additional key and value embeddings that are explicitly designed as biases [4].\n\nOne concrete variant they test is a special case of their proposed formulation (Equation 3) in which both k′ and v′ are zero vectors; this is equivalent to the previously proposed Softmax-off-by-one [5]. They also note that Equation 3 can be viewed as inserting a sequence [5].\n\nThe paper reports that models augmented with explicit attention biases do not exhibit massive activations [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference describes augmenting self-attention with additional key and value embeddings explicitly designed as biases, including a formulation (Equation 3) and variants, which directly answers how the authors add explicit attention biases.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "How do the authors add explicit attention biases to self-attention?"
+        },
+        "latency_s": 4.19,
+        "system_llm_calls": 3,
+        "retrieved_relevant": false,
+        "correctness_verdicts": [
+          "partial",
+          "partial"
+        ],
+        "correctness": 0.5,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p18",
+        "question": "Which three GPT-2 variants were trained in the explicit attention bias experiment?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "The three GPT-2 variants trained were: the standard model, GPT-2 prepended with a sink token (Xiao et al., 2023b), and GPT-2 with explicit attention biases [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states the three GPT-2 models trained: standard GPT-2, GPT-2 with a sink token, and GPT-2 with explicit attention biases.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "Which three GPT-2 variants were trained in the explicit attention bias experiment?"
+        },
+        "latency_s": 3.56,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p19",
+        "question": "Do massive activations appear in GPT-2 trained with explicit attention biases?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "No. According to the reference materials, massive activations disappear in GPT-2 trained with explicit attention biases, as compared to the default GPT-2 and the one with a sink token [2][4]. Figure 10 shows that with explicit attention biases, the top activation magnitudes in GPT-2 increase gradually as layers go deeper [1][4].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states that massive activations disappear in GPT-2 trained with explicit attention biases, directly answering the question.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "Do massive activations appear in GPT-2 trained with explicit attention biases?"
+        },
+        "latency_s": 3.31,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p20",
+        "question": "Which ViT-L models exhibit massive activations and which do not?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "According to the reference materials:\n\n**ViT-L models that exhibit massive activations:**\n- CLIP ViT-L — massive activations exist, with extremely few activations (fewer than four) having significantly larger magnitudes than others, located in specific feature dimensions and appearing in random patch tokens [1]. These activations are consistently present across images and their values remain largely the same around the mean values [1].\n- DINOv2 ViT-L — massive activations exist, with the same characteristics (fewer than four extremely large activations in specific feature dimensions, in random patch tokens) [1]. In DINOv2 ViT-L, massive activations are observed in the later stages of the model but are absent in the output of the final layer [2].\n\n**ViT-L model that does not exhibit massive activations:**\n- MAE ViT-L — massive activations are not observed in this model; instead, a feature dimension (927) exhibits uniformly large values across all tokens [1]. MAE ViT-B/L are also listed among ViTs that do not exhibit massive activations [2].\n\nAdditionally, the materials note that unlike LLMs, massive activations start to appear only in the later stages of ViTs [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料明确指出CLIP和DINOv2 ViT-L存在大规模激活，而MAE ViT-L不存在，直接回答了问题。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "Which ViT-L models exhibit massive activations and which do not?"
+        },
+        "latency_s": 4.39,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p21",
+        "question": "What is observed in MAE ViT-L instead of massive activations?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "In MAE ViT-L, massive activations are not observed; instead, a feature dimension (927) exhibits uniformly large values across all tokens [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The document explicitly states that in MAE ViT-L, massive activations are not observed; instead, a feature dimension (927) exhibits uniformly large values across all tokens.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "What is observed in MAE ViT-L instead of massive activations?"
+        },
+        "latency_s": 3.21,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p22",
+        "question": "At which layer was the intervention on CLIP ViT-L performed?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "The intervention on CLIP ViT-L was performed on layer 13, where massive activations first appear within this model [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states the intervention on CLIP ViT-L was conducted on layer 13.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "At which layer was the intervention on CLIP ViT-L performed?"
+        },
+        "latency_s": 2.68,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p23",
+        "question": "Where do massive activations appear in DINOv2-reg ViT-G?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "In DINOv2-reg ViT-G, massive activations do not appear in patch tokens but exclusively within a fixed register token, specifically register 3 [1][3].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states that in DINOv2-reg ViT-G, massive activations appear exclusively within a fixed register token, register 3.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "Where do massive activations appear in DINOv2-reg ViT-G?"
+        },
+        "latency_s": 3.14,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p24",
+        "question": "What is the ImageNet accuracy of DINOv2-reg ViT-G before and after fixing register features to their means?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "According to Table 5, the ImageNet accuracy of DINOv2-reg ViT-G is 87.0% for the Original model and 87.0% for Fix-Reg-Mean (all register features fixed to their means at every layer) [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "Table 5 in the reference directly provides ImageNet accuracy for DINOv2-reg ViT-G: 87.0% original and 87.0% after fixing register features to their means.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "What is the ImageNet accuracy of DINOv2-reg ViT-G before and after fixing register features to their means?"
+        },
+        "latency_s": 3.86,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p25",
+        "question": "What practical implication does the paper mention for model quantization?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "The paper notes that activations with large magnitudes have been widely known as a major challenge in effectively quantizing LLMs [1]. It states that the paper identifies a new type of outlier activations in LLMs, and the authors hope these findings will be of value to research on LLM compression [1].",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "文档1明确提到大激活值的存在是LLM量化中的主要挑战，并指出该发现对LLM压缩研究有价值，直接回答了模型量化的实际意义。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "What practical implication does the paper mention for model quantization?"
+        },
+        "latency_s": 3.38,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "p26",
+        "question": "Why were the explicit attention bias experiments limited to a small GPT-2?",
+        "lang": "en",
+        "answerable": true,
+        "answer": "资料中未说明显式注意力偏置（explicit attention bias）实验为何仅限于小型 GPT-2 模型。\n\n资料中仅提到，作者对新的注意力公式的研究聚焦于其对 massive activations 的影响，且由于计算资源限制，实验仅限于小型 GPT-2 模型 [1]。但这一说明针对的是“新的注意力公式”相关实验，资料并未明确将其与显式注意力偏置实验的限制原因直接关联。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "The reference explicitly states that experiments were limited to a small GPT-2 model due to computational resource constraints.",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "Why were the explicit attention bias experiments limited to a small GPT-2?"
+        },
+        "latency_s": 3.61,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "partial",
+          "partial"
+        ],
+        "correctness": 0.5,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "x01",
+        "question": "LLaMA2-7B 中的大规模激活（massive activations）出现在哪两个特征维度？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "answer": "LLaMA2-7B 中的大规模激活出现在两个特征维度：1415 和 2533 [1]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料明确指出 LLaMA2-7B 的大规模激活出现在特征维度 1415 和 2533。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "LLaMA2-7B 中的大规模激活（massive activations）出现在哪两个特征维度？"
+        },
+        "latency_s": 3.1,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "x02",
+        "question": "把大规模激活置零会对 LLaMA2-7B 造成什么影响？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "answer": "在 LLaMA2-7B 中，将大规模激活置零会导致模型性能灾难性崩溃：仅将四个大规模激活（在数百万个激活中）置零，就会造成模型性能的灾难性崩溃 [1]。具体到干预实验，在隐藏状态中大规模激活首次出现的位置（LLaMA2-7B 对应第 2 层）将其置零后，WikiText、C4、PG-19 上的困惑度均变为 inf，零样本准确率从原始的 68.95% 降至 36.75% [2]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料明确指出在LLaMA2-7B中将四个大规模激活置零会导致模型性能灾难性崩溃，并提供了困惑度和零样本准确率的具体数据。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "把大规模激活置零会对 LLaMA2-7B 造成什么影响？"
+        },
+        "latency_s": 3.56,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "x03",
+        "question": "这篇论文发表在哪个会议？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "answer": "这篇论文发表在 First Conference on Language Modeling (COLM)，2024 年 [1][2][3]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "参考资料明确标注该论文发表于 First Conference on Language Modeling (COLM), 2024。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "这篇论文发表在哪个会议？"
+        },
+        "latency_s": 3.13,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "x04",
+        "question": "MAE ViT-L 中有没有观察到大规模激活？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "answer": "没有观察到。资料明确指出，在 MAE ViT-L 中并未观察到大规模激活（massive activations）；该模型中某个特征维度（927）在所有 token 上呈现均匀的大值 [1]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料明确指出在MAE ViT-L中未观察到大规模激活，并描述了其激活分布特征。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "MAE ViT-L 中有没有观察到大规模激活？"
+        },
+        "latency_s": 3.26,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "x05",
+        "question": "为什么作者认为大规模激活起到了偏置项（bias）的作用？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "answer": "作者认为大规模激活起到偏置项（bias）作用，主要依据以下实验观察和推理：\n\n1. **置零会导致性能崩溃，而置为均值几乎无影响**：将大规模激活置零（Set to zero）会导致模型性能显著退化，例如困惑度（perplexity）爆炸式上升；而将同等数量、幅度接近中位数的普通激活置零则不会造成性能下降。相比之下，将大规模激活调整为它们的经验均值（Set to mean，均值基于 RedPajama 的 100 条序列计算）后，困惑度和零样本准确率的变化可以忽略不计。这说明大规模激活的取值是常数且与输入无关，其作用类似于偏置项 [1]。\n\n2. **总结性结论**：作者据此明确总结——\"Massive activations act as fixed but important biases in LLMs\"（大规模激活在 LLM 中充当固定但重要的偏置）[1]；并进一步指出，将其设为均值不会损害模型，表明其作用等同于简单的常数偏置 [2]。\n\n3. **与自注意力中的隐式偏置相关**：作者还发现大规模激活与自注意力密切相关，LLM 利用大规模激活将大量注意力集中在极少数 token 上，从而在注意力计算中注入隐式偏置项；并且通过为自注意力增加显式的 key/value 偏置嵌入进行训练，可以消除 LLM 学习大规模激活的需要 [2][3]。\n\n4. **在 ViT 中的类似表现**：在 Vision Transformers 中，大规模激活同样表现为类似固定偏置的作用，其学习到的值与输入图像无关 [4]。\n\n综上，作者的核心论据是：大规模激活的数值是输入无关的常数、置为均值不影响模型、置零则严重损害模型，因此其功能等价于固定偏置项 [1][2]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料明确指出将大规模激活设为均值后模型性能几乎不变，说明其值与输入无关、类似常数偏置项，直接回答了作者为何认为其起偏置作用。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "为什么作者认为大规模激活起到了偏置项（bias）的作用？"
+        },
+        "latency_s": 5.23,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "t01",
+        "question": "差旅报销需要提交哪些材料？",
+        "lang": "zh",
+        "answerable": true,
+        "answer": "根据参考资料，差旅报销需要提交以下材料：\n\n1. 经审批通过的《出差申请单》[1]；\n2. 交通票据：机票行程单或火车票原件[1]；\n3. 住宿发票：须为增值税发票，抬头为公司全称[1]；\n4. 《差旅费报销单》，由本人签字[1]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "参考资料第三条明确列出了差旅报销需提交的四项材料，直接回答了用户问题。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "差旅报销需要提交哪些材料？"
+        },
+        "latency_s": 2.99,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "t02",
+        "question": "出差结束后多久内要提交报销？逾期怎么办？",
+        "lang": "zh",
+        "answerable": true,
+        "answer": "根据《天琴科技差旅报销管理办法》第四条：员工应在出差结束后 **15 个自然日内**提交报销申请 [1]。\n\n逾期处理分两种情况 [1]：\n- 超过 15 日未提交的，须附情况说明并经**分管副总批准**；\n- 超过 **60 日**的**不予报销**。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料第四条明确规定了出差结束后15个自然日内提交报销，以及逾期需附情况说明经分管副总批准、超过60日不予报销的处理办法。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "出差结束后多久内要提交报销？逾期怎么办？"
+        },
+        "latency_s": 3.33,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "t03",
+        "question": "一线城市的住宿报销标准是多少？",
+        "lang": "zh",
+        "answerable": true,
+        "answer": "一线城市住宿费每晚不超过 600 元，超出标准的部分由员工自行承担。[1]",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料第五条明确给出了一线城市住宿费每晚不超过600元的报销标准。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "一线城市的住宿报销标准是多少？"
+        },
+        "latency_s": 2.71,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "t04",
+        "question": "出差伙食补助是多少？需要发票吗？",
+        "lang": "zh",
+        "answerable": true,
+        "answer": "根据参考资料：出差期间伙食补助按每人每天 100 元标准发放，无需提供发票 [1]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料第六条明确给出伙食补助标准为每人每天100元且无需提供发票，直接回答了用户两个问题。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "出差伙食补助是多少？需要发票吗？"
+        },
+        "latency_s": 3.04,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "t05",
+        "question": "没走审批就出差，费用能报销吗？",
+        "lang": "zh",
+        "answerable": true,
+        "answer": "不能报销。根据制度规定，员工出差前须在 OA 系统提交《出差申请单》，经部门负责人审批通过后方可出行，**未经审批的出差费用不予报销** [1]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料第二条明确规定未经审批的出差费用不予报销，直接回答了用户问题。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "没走审批就出差，费用能报销吗？"
+        },
+        "latency_s": 3.04,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "t06",
+        "question": "报销款多久能到账？",
+        "lang": "zh",
+        "answerable": true,
+        "answer": "根据参考资料，报销单经部门负责人、财务部依次审核后，财务部在 5 个工作日内将款项打入员工工资卡 [1]。",
+        "quality": {
+          "retrieval_grade": "relevant",
+          "grade_reason": "资料第七条明确说明财务部在审核后5个工作日内将报销款打入员工工资卡，直接回答了到账时间。",
+          "audit_status": "pass",
+          "audit_reason": "",
+          "fallback_used": false,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 0,
+          "generation_retries": 0,
+          "resolved_query": "报销款多久能到账？"
+        },
+        "latency_s": 3.26,
+        "system_llm_calls": 3,
+        "retrieved_relevant": true,
+        "correctness_verdicts": [
+          "correct",
+          "correct"
+        ],
+        "correctness": 1.0,
+        "faithfulness": 1.0,
+        "unsupported_claims": []
+      },
+      {
+        "id": "u01",
+        "question": "公司股票期权怎么行权？",
+        "lang": "zh",
+        "answerable": false,
+        "answer": "知识库中未找到相关资料。以下为通用知识，不代表企业内部规定：股票期权行权通常需在行权窗口期内按公司或计划管理方（如券商、托管机构）的指引提交行权申请、支付行权价款并处理税费，具体流程、窗口期和限制因公司计划而异，建议咨询公司人力资源、股权激励或法务部门，并以公司正式文件和计划规则为准。",
+        "quality": {
+          "retrieval_grade": "irrelevant",
+          "grade_reason": "未检索到任何相关片段",
+          "audit_status": "skipped",
+          "audit_reason": "兜底模式：知识库没有资料，无法做私有资料比对",
+          "fallback_used": true,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 2,
+          "generation_retries": 0,
+          "resolved_query": "公司股票期权怎么行权？"
+        },
+        "latency_s": 12.72,
+        "system_llm_calls": 3,
+        "retrieved_relevant": null,
+        "refused": true
+      },
+      {
+        "id": "u02",
+        "question": "加班费怎么计算？",
+        "lang": "zh",
+        "answerable": false,
+        "answer": "知识库中未找到相关资料。以下为通用知识，不代表企业内部规定：加班费计算通常依据当地劳动法规，常见做法是工作日加班按不低于工资的150%、休息日加班且不能补休按不低于200%、法定节假日加班按不低于300%支付。具体计算基数和规则请以公司制度及当地法规为准。",
+        "quality": {
+          "retrieval_grade": "irrelevant",
+          "grade_reason": "未检索到任何相关片段",
+          "audit_status": "skipped",
+          "audit_reason": "兜底模式：知识库没有资料，无法做私有资料比对",
+          "fallback_used": true,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 2,
+          "generation_retries": 0,
+          "resolved_query": "加班费怎么计算？"
+        },
+        "latency_s": 13.5,
+        "system_llm_calls": 3,
+        "retrieved_relevant": null,
+        "refused": true
+      },
+      {
+        "id": "u03",
+        "question": "国际出差的住宿标准是多少？",
+        "lang": "zh",
+        "answerable": false,
+        "answer": "知识库中未找到相关资料。以下为通用知识，不代表企业内部规定：国际出差住宿标准通常由企业差旅制度按国家/地区、城市等级和职级分档设定，常见做法是设置每晚限额或据实报销上限，并区分一线城市与普通城市。具体标准请以公司差旅管理制度或财务部门规定为准。",
+        "quality": {
+          "retrieval_grade": "insufficient",
+          "grade_reason": "资料仅给出国内一线/其他城市的住宿标准，未涉及国际出差的住宿标准。",
+          "audit_status": "skipped",
+          "audit_reason": "兜底模式：知识库没有资料，无法做私有资料比对",
+          "fallback_used": true,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 2,
+          "generation_retries": 0,
+          "resolved_query": "国际出差的住宿标准是多少？"
+        },
+        "latency_s": 17.86,
+        "system_llm_calls": 6,
+        "retrieved_relevant": null,
+        "refused": true
+      },
+      {
+        "id": "u04",
+        "question": "差旅报销可以用支付宝收款吗？",
+        "lang": "zh",
+        "answerable": false,
+        "answer": "知识库中未找到相关资料。以下为通用知识，不代表企业内部规定：差旅报销能否用支付宝收款，取决于贵公司的财务制度和报销系统设置，建议直接咨询财务部门或查看内部报销流程说明。",
+        "quality": {
+          "retrieval_grade": "insufficient",
+          "grade_reason": "资料仅说明报销款打入员工工资卡，未提及是否可用支付宝收款，缺少回答该问题的关键事实。",
+          "audit_status": "skipped",
+          "audit_reason": "兜底模式：知识库没有资料，无法做私有资料比对",
+          "fallback_used": true,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 2,
+          "generation_retries": 0,
+          "resolved_query": "差旅报销可以用支付宝收款吗？"
+        },
+        "latency_s": 15.81,
+        "system_llm_calls": 6,
+        "retrieved_relevant": null,
+        "refused": true
+      },
+      {
+        "id": "u05",
+        "question": "Does the paper study massive activations in Google's Gemini models?",
+        "lang": "en",
+        "answerable": false,
+        "answer": "知识库中未找到相关资料。  \n由于没有提供外部公开资料，无法确认该论文是否研究了 Google Gemini 模型中的 massive activations。以下为通用知识，不代表企业内部规定：要判断这一点，需要查看论文的模型范围、实验对象和附录说明；仅凭现有信息我不能确定，建议直接查阅论文原文或作者说明。",
+        "quality": {
+          "retrieval_grade": "irrelevant",
+          "grade_reason": "The reference materials discuss massive activations in various LLMs (LLaMA2, Mistral, etc.) but never mention Google's Gemini models.",
+          "audit_status": "skipped",
+          "audit_reason": "兜底模式：知识库没有资料，无法做私有资料比对",
+          "fallback_used": true,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 2,
+          "generation_retries": 0,
+          "resolved_query": "Does the paper study massive activations in Google's Gemini models?"
+        },
+        "latency_s": 21.02,
+        "system_llm_calls": 6,
+        "retrieved_relevant": null,
+        "refused": true
+      },
+      {
+        "id": "u06",
+        "question": "这篇论文用了多少块 GPU 训练 LLaMA2-70B？",
+        "lang": "zh",
+        "answerable": false,
+        "answer": "知识库中未找到相关资料。以下为通用知识，不代表企业内部规定：LLaMA2-70B 的训练 GPU 数量取决于具体论文和训练配置，我无法确认你提到的那篇论文用了多少块 GPU；建议查阅该论文的实验设置或训练细节章节。",
+        "quality": {
+          "retrieval_grade": "irrelevant",
+          "grade_reason": "参考资料仅讨论LLaMA2-70B的激活现象和模型参数，未提及训练所用GPU数量。",
+          "audit_status": "skipped",
+          "audit_reason": "兜底模式：知识库没有资料，无法做私有资料比对",
+          "fallback_used": true,
+          "external_query_sent": false,
+          "kb_empty": false,
+          "retrieval_retries": 2,
+          "generation_retries": 0,
+          "resolved_query": "这篇论文用了多少块 GPU 训练 LLaMA2-70B？"
+        },
+        "latency_s": 23.43,
+        "system_llm_calls": 6,
+        "retrieved_relevant": null,
+        "refused": true
+      }
+    ]
+  }
+}

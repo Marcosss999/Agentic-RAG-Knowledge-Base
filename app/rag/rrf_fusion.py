@@ -16,12 +16,12 @@ logger = logging.getLogger(__name__)
 
 class RRFFusion:
     """
-    工业级 RRF 倒数名次互逆融合器
+    RRF（Reciprocal Rank Fusion）名次融合器
     公式：RRF_Score(d) = SUM_m [ weight_m / (k + rank_m(d)) ]
     """
 
     def __init__(self, k: int = None):
-        # 默认采用行业黄金平滑常数 60 (源自 Cormack et al. 经典论文)
+        # 默认 k=60，取自 Cormack et al. (2009) 的原始论文
         self.k = k or settings.rag.RRF_K
 
     def fuse(

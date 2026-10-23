@@ -6,10 +6,21 @@
 3. 实现母块（Parent Chunk）与子块（Child Chunk）的双层构建与双向 ID 绑定映射。
 """
 
+import bisect
+import re
 import uuid
 from typing import List, Dict, Any, Tuple
 from app.core.config import settings
 from app.models.schemas import ParentChunk, ChildChunk
+
+
+PAGE_MARK = re.compile(r"--- \[第 (\d+) 页\] ---")
+
+
+def _page_at(page_marks, pos: int):
+    """返回 pos 所在的页码：位置之前最近的一个页码标记；在第一个标记之前则返回 None"""
+    idx = bisect.bisect_right([p for p, _ in page_marks], pos) - 1
+    return page_marks[idx][1] if idx >= 0 else None
 
 
 class RecursiveTextSplitter:
@@ -108,7 +119,7 @@ class RecursiveTextSplitter:
 
 class ParentChildSplitter:
     """
-    企业级父子分块管理器 (Parent-Child Chunking Engine)
+    父子分块管理器 (Parent-Child Chunking)
     双塔检索架构的解药：
     - 母块 (Parent Chunk)：大颗粒度 (~1500字)，留存完整的叙事背景与因果推导，供 LLM 生成高质量答案。
     - 子块 (Child Chunk)：小颗粒度 (~300字)，语义密度极高，专门提供给向量库与 BM25 做高灵敏度检索命中。
@@ -121,11 +132,15 @@ class ParentChildSplitter:
         child_chunk_size: int = None,
         child_chunk_overlap: int = None
     ):
-        # 允许外部注入，未注入时回退至全局配置参数
-        self.p_size = parent_chunk_size or settings.rag.PARENT_CHUNK_SIZE
-        self.p_overlap = parent_chunk_overlap or settings.rag.PARENT_CHUNK_OVERLAP
-        self.c_size = child_chunk_size or settings.rag.CHILD_CHUNK_SIZE
-        self.c_overlap = child_chunk_overlap or settings.rag.CHILD_CHUNK_OVERLAP
+        # 允许外部注入，未注入时回退至全局配置参数。
+        # DATA-5：原来用 `x or default`，传入 0 时 `0 or 150` 得到 150，overlap=0 永远无法生效。
+        def pick(value, default):
+            return default if value is None else value
+
+        self.p_size = pick(parent_chunk_size, settings.rag.PARENT_CHUNK_SIZE)
+        self.p_overlap = pick(parent_chunk_overlap, settings.rag.PARENT_CHUNK_OVERLAP)
+        self.c_size = pick(child_chunk_size, settings.rag.CHILD_CHUNK_SIZE)
+        self.c_overlap = pick(child_chunk_overlap, settings.rag.CHILD_CHUNK_OVERLAP)
 
         self.parent_splitter = RecursiveTextSplitter(
             chunk_size=self.p_size,
@@ -158,9 +173,17 @@ class ParentChildSplitter:
         # 阶段一：先切出大粒度母块
         raw_parent_texts = self.parent_splitter.split_text(raw_text)
 
+        # ENG-7：PDF 抽取文本带有 "--- [第 n 页] ---" 标记，记下每个标记的位置，用来给子块标注页码
+        page_marks = [(m.start(), int(m.group(1))) for m in PAGE_MARK.finditer(raw_text)]
+        parent_cursor = 0
+
         global_child_index = 0
 
         for p_idx, p_text in enumerate(raw_parent_texts):
+            p_start = raw_text.find(p_text[:60], parent_cursor) if page_marks else -1
+            if p_start >= 0:
+                parent_cursor = p_start + 1
+            child_cursor = 0
             parent_id = f"parent_{doc_id}_{p_idx}_{uuid.uuid4().hex[:8]}"
             child_ids_in_this_parent: List[str] = []
 
@@ -168,6 +191,12 @@ class ParentChildSplitter:
             raw_child_texts = self.child_splitter.split_text(p_text)
 
             for c_text in raw_child_texts:
+                page = None
+                if p_start >= 0:
+                    c_off = p_text.find(c_text[:40], child_cursor)
+                    if c_off >= 0:
+                        child_cursor = c_off + 1
+                        page = _page_at(page_marks, p_start + c_off + len(c_text) // 2)
                 child_id = f"child_{doc_id}_{global_child_index}_{uuid.uuid4().hex[:8]}"
                 child_ids_in_this_parent.append(child_id)
 
@@ -182,7 +211,8 @@ class ParentChildSplitter:
                         **base_meta,
                         "parent_id": parent_id,
                         "parent_index": p_idx,
-                        "char_count": len(c_text)
+                        "char_count": len(c_text),
+                        **({"page": page} if page is not None else {}),
                     }
                 )
                 child_chunks.append(child_entity)

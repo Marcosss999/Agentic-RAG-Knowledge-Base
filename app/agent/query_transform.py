@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class QueryTransformer:
-    """企业级查询重塑与意图分析引擎"""
+    """查询改写：指代消解、多查询扩展、HyDE"""
 
     def __init__(self):
         self.llm = llm_provider

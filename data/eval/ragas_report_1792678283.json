@@ -1,0 +1,52 @@
+{
+  "total_samples": 2,
+  "evaluation_engine": "Hybrid LLM-as-a-Judge & Grounded Mathematical Metric Suite",
+  "average_metrics": {
+    "faithfulness": 0.75,
+    "answer_relevancy": 0.975,
+    "context_precision": 1.0,
+    "context_recall": 1.0,
+    "overall_score": 0.9187
+  },
+  "timestamp": "2026-10-22 22:11:23",
+  "details": [
+    {
+      "sample_id": 1,
+      "query": "系统的父子分块切分大小分别是多少？",
+      "ground_truth": "母块1500字，子块300字。",
+      "metrics": {
+        "context_recall": 1.0,
+        "context_precision": 1.0,
+        "faithfulness": 0.5,
+        "answer_relevancy": 1.0,
+        "overall_score": 0.85,
+        "evaluated_at": 1792678278.2718964
+      },
+      "audit_reasons": {
+        "faithfulness_reason": "回答包含两个事实命题：1) 母块尺寸为1500字符保留完整全局上下文；2) 子块尺寸为300字符用于向量高维检索。参考证据明确支持母块大小1500字和子块大小300字，但未提及'保留完整全局上下文'和'用于向量高维检索'，因此这两个附加描述缺乏推导依据。核心尺寸数值正确，但部分命题无依据，支持比例约为0.5。",
+        "answer_relevancy_reason": "回答直接、准确地给出了用户所问的父子分块切分大小（母块1500字符，子块300字符），语义完全相关且切题。",
+        "context_precision_reason": "唯一召回片段直接、完整地回答了用户问题，明确给出母块1500字、子块300字，与查询高度相关且无噪声，排序质量最优。",
+        "context_recall_reason": "检索到的上下文明确包含母块1500字和子块300字，与标准答案完全一致。"
+      }
+    },
+    {
+      "sample_id": 2,
+      "query": "检索融合阶段采用了什么算法抹平量纲差异？",
+      "ground_truth": "RRF互逆排名融合算法(k=60)。",
+      "metrics": {
+        "context_recall": 1.0,
+        "context_precision": 1.0,
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.95,
+        "overall_score": 0.9875,
+        "evaluated_at": 1792678283.4830234
+      },
+      "audit_reasons": {
+        "faithfulness_reason": "回答仅包含一个事实命题：检索融合阶段采用了RRF（平滑常数k=60）互逆排名融合算法。参考证据明确说明利用RRF互逆排名算法进行合并且常数取60，因此该命题完全得到支持。",
+        "answer_relevancy_reason": "回答直接针对用户问题，明确指出检索融合阶段采用了RRF算法，并补充了平滑常数k=60，切题且信息完整。",
+        "context_precision_reason": "唯一召回片段直接命中用户问题：明确说明采用RRF互逆排名算法对BM25与向量名次进行无量纲合并，并给出常数60，完整回答了融合阶段抹平量纲差异的算法，排序质量最优。",
+        "context_recall_reason": "检索到的上下文明确提及RRF互逆排名算法、无量纲合并（抹平量纲差异）以及常数60，与标准答案完全一致。"
+      }
+    }
+  ]
+}

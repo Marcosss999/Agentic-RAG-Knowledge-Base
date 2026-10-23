@@ -3,7 +3,7 @@ Cross-Encoder 交叉重排与母块回填引擎 (Reranker & Context Expansion)
 职责：
 1. 解决双塔向量检索只衡量“主题相关”而无法衡量“直接解答度”的深层缺陷。
 2. 调用 Cross-Encoder 交叉注意力重排模型 (如 gte-rerank-v2)，对候选集做深度交叉打分。
-3. 实施相关度硬阈值门控 (Threshold Filter)，彻底拦截垃圾噪音，防止下游幻觉。
+3. 相关度阈值过滤 (Threshold Filter)：过滤低分片段，减少无关资料进入上下文（阈值尚未标定，见 API-4）。
 4. 完成“父子分块”的终极闭环：小块打分排序，胜出者自动回填母块完整上下文 (Parent Context Expansion)。
 """
 
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class CrossEncoderReranker:
     """
-    企业级 Cross-Encoder 交叉重排器
+    交叉重排器（在线调用百炼 gte-rerank；离线时为词面打分桩，不是交叉编码器）
     具备“精准精排 + 门控截断 + 母块回填”三重能力
     """
 
@@ -51,58 +51,65 @@ class CrossEncoderReranker:
         limit = top_n or self.top_n
         parent_map = parent_docs_map or {}
 
-        # 提取候选文档的原文列表送给模型
         doc_texts = [item.content for item in candidates]
 
-        # 1. 调用底层的重排接口 (或本地 Mock 模拟重排)
-        raw_rerank_results = await llm_provider.rerank(
-            query=query,
-            documents=doc_texts,
-            top_n=len(doc_texts)  # 先全量打分，后续结合阈值截取
-        )
+        # 1. 调用重排接口（离线时为本地打分桩）。
+        # API-3：重排服务出错（超时/限流/5xx）时不让整个问答失败，退回 RRF 融合排序，并在元数据里标明。
+        rerank_failed = False
+        try:
+            raw_rerank_results = await llm_provider.rerank(query=query, documents=doc_texts, top_n=len(doc_texts))
+        except Exception as e:
+            logger.warning(f"[Reranker] 重排服务调用失败，退回 RRF 排序: {e}")
+            rerank_failed = True
+            raw_rerank_results = [
+                {"index": i, "relevance_score": c.score} for i, c in enumerate(candidates)
+            ]
 
         final_items: List[SearchResultItem] = []
+        seen_parents = set()
 
-        # 2. 遍历重排打分结果并执行阈值过滤
-        for rank, res in enumerate(raw_rerank_results, start=1):
+        for res in raw_rerank_results:
             score = float(res["relevance_score"])
-
-            # 门控拦截：低于最低阈值的候选直接淘汰，防范幻觉
-            if score < self.min_score:
-                logger.debug(f"[Reranker] 切片淘汰: 得分 {score} 低于设定门控阈值 {self.min_score}")
+            # 2. 阈值过滤（RRF 回退时分数尺度不同，不做阈值过滤）
+            if not rerank_failed and score < self.min_score:
+                logger.debug(f"[Reranker] 淘汰: 得分 {score} 低于阈值 {self.min_score}")
                 continue
 
-            orig_candidate = candidates[res["index"]]
-            parent_id = orig_candidate.parent_id
-            
-            # 3. 执行母块回填 (Parent Context Expansion)
-            parent_text = None
-            if parent_id and parent_id in parent_map:
-                parent_text = parent_map[parent_id].content
+            orig = candidates[res["index"]]
+            parent_id = orig.parent_id
 
-            # 组装最终重排实体
-            reranked_item = SearchResultItem(
-                chunk_id=orig_candidate.chunk_id,
-                doc_id=orig_candidate.doc_id,
-                doc_name=orig_candidate.doc_name,
+            # 3. DATA-4：同一母块只保留得分最高的子块。原实现 5 个结果可能全来自同一母块，
+            #    母块回填后同一段文字在上下文里重复 5 次（实测 6139 字，几乎全是重复）。
+            #    结果已按得分降序，第一次出现的就是该母块下得分最高的子块。
+            dedup_key = parent_id or orig.chunk_id
+            if dedup_key in seen_parents:
+                continue
+            seen_parents.add(dedup_key)
+
+            parent_text = parent_map[parent_id].content if parent_id and parent_id in parent_map else None
+
+            final_items.append(SearchResultItem(
+                chunk_id=orig.chunk_id,
+                doc_id=orig.doc_id,
+                doc_name=orig.doc_name,
                 parent_id=parent_id,
-                content=orig_candidate.content,
-                parent_content=parent_text, # 注入母块大段上下文
+                content=orig.content,
+                parent_content=parent_text,
                 score=round(score, 4),
-                source=RetrievalSource.RERANKED,
+                source=RetrievalSource.HYBRID_RRF if rerank_failed else RetrievalSource.RERANKED,
                 rank=len(final_items) + 1,
                 metadata={
-                    **orig_candidate.metadata,
-                    "rerank_score": round(score, 4),
-                    "has_parent_context": bool(parent_text)
-                }
-            )
-            final_items.append(reranked_item)
-
+                    **orig.metadata,
+                    "rerank_score": None if rerank_failed else round(score, 4),
+                    "rerank_fallback": rerank_failed,
+                    "has_parent_context": bool(parent_text),
+                },
+            ))
             if len(final_items) >= limit:
                 break
 
-        logger.info(f"[Reranker] 精排完成: 输入 {len(candidates)} 条候选，通过门控阈值并保留 Top-{len(final_items)} 条高质量结果")
+        logger.info(f"[Reranker] 输入 {len(candidates)} 条候选，保留 {len(final_items)} 条"
+                    f"（按母块去重{'，重排失败已回退 RRF' if rerank_failed else ''}）")
         return final_items
 
 

@@ -1,9 +1,9 @@
 """
-LangGraph 自省状态机全局契约 (Agentic RAG State Definition)
+LangGraph 状态定义 (Agentic RAG State)
 职责：
-1. 作为状态图 (StateGraph) 中所有节点间传递的“唯一定义与单一事实来源 (Single Source of Truth)”。
-2. 规范定义自省决策变量（检索评价、重试计数器、幻觉审计标志、回退搜索控制）。
-3. 利用 Annotated[List, operator.add] 状态累加器通道，原生支持节点执行时间线 (Timeline Trace) 的有序累加，不丢步。
+1. 定义状态图中所有节点之间传递的数据通道。
+2. 定义自省决策变量：检索评级、审计结论、两套独立的重试计数、兜底标记。
+3. steps_timeline 使用 Annotated[List, operator.add] 累加器，多个节点追加时间线事件不会互相覆盖。
 """
 
 import operator
@@ -13,42 +13,55 @@ from app.models.schemas import SearchResultItem, CitationReference
 
 
 class AgenticRAGState(TypedDict):
-    """
-    自省式 RAG 状态契约 (Self-RAG State Channels)
-    每一个键值都是 LangGraph 图调度中流动的数据通道
-    """
-
-    # 1. 基础会话与入参通道
+    # 1. 会话与输入
     session_id: str
     original_query: str
     chat_history: List[Dict[str, str]]
 
-    # 2. 查询理解与重塑通道
-    transformed_query: str                 # 指代消解后的清晰检索Query
-    multi_queries: List[str]               # 多查询扩展列表 (用于并发多路拉取)
-    is_complex: bool                       # 是否属于复合多跳问题
+    # 2. 查询理解
+    resolved_query: str                    # 结合对话历史消解指代后的独立问题（生成阶段使用，AGENT-7）
+    transformed_query: str                 # 当前用于检索的查询（自省改写会更新它）
+    multi_queries: List[str]               # 多查询扩展（ENABLE_MULTI_QUERY 开启时）
+    hyde_passage: Optional[str]            # HyDE 假设性回答（ENABLE_HYDE 开启时）
+    is_complex: bool
 
-    # 3. 混合检索与重排结果通道
-    retrieved_docs: List[SearchResultItem] # 经过 RRF 融合与重排后的精选片段列表
-    formatted_context: str                 # 格式化后注入给大模型的母块全文段落
-    citations: List[CitationReference]     # 结构化引用证据列表 (前端高亮渲染)
+    # 3. 检索结果
+    retrieved_docs: List[SearchResultItem]
+    formatted_context: str
+    citations: List[CitationReference]
+    kb_empty: bool                         # 知识库为空：直接短路，不做无意义的改写重试（AGENT-4）
 
-    # 4. Agent 自省判定与控制信号通道 (Reflection & Control Flags)
-    retrieval_grade: str                   # 检索质量评价: "relevant"(达标) / "insufficient"(部分相关) / "irrelevant"(不相关)
-    grade_reason: str                      # 质量评级判定依据
-    retry_count: int                       # 循环重试/改写计数器 (严控上限，防止无限死循环)
-    max_retries: int                       # 允许最大重写检索次数 (默认 2 次)
-    web_fallback_needed: bool              # 是否触发外部搜索引擎兜底降级
+    # 4. 闸门一：检索评级
+    # relevant / insufficient / irrelevant：LLM 给出的结论
+    # uncertain：LLM 调用失败或输出无法解析（不再默认当作 relevant，AGENT-1）
+    # unverified：离线模式没有 LLM，未做评级
+    retrieval_grade: str
+    grade_reason: str
 
-    # 5. 生成与幻觉自审通道 (Generation & Hallucination Audit)
-    generated_answer: str                  # 大模型当前生成的回答候选
-    hallucination_passed: bool             # 忠实度 (Faithfulness) 审核是否通过: True/False
-    hallucination_critique: str            # 发现的幻觉/捏造疑点说明 (用于指导重写生成)
+    # 5. 两套独立的重试计数（AGENT-3：原来共用一个 retry_count，检索改写会挤占重新生成的机会）
+    retrieval_retries: int                 # 已做的检索改写次数
+    max_retries: int                       # 检索改写上限
+    generation_retries: int                # 因审计不通过而重新生成的次数
+    max_generation_retries: int            # 重新生成上限
+    retry_count: int                       # = retrieval_retries + generation_retries，仅用于展示与兼容
 
-    # 6. 可观测性与执行轨迹时间线 (利用 operator.add 支持多节点无冲突增量追加)
+    # 6. 兜底
+    web_fallback_needed: bool              # 是否进入了"知识库无答案"的兜底分支
+    web_fallback_external: bool            # 兜底时是否真的向外部发送了查询
+
+    # 7. 生成与闸门二：幻觉审计
+    generated_answer: str
+    answer_attempts: List[str]             # 每一次生成的回答（重新生成时保留上一版，便于前端展示与排查）
+    # pass / fail：LLM 给出的结论；uncertain：审计调用失败或无法解析；
+    # skipped：兜底模式不做私有库比对；unverified：离线模式没有 LLM
+    audit_status: str
+    hallucination_passed: bool             # audit_status == "pass"（兼容旧字段）
+    hallucination_critique: str
+
+    # 8. 时间线（累加器通道）
     steps_timeline: Annotated[List[Dict[str, Any]], operator.add]
 
-    # 7. 异常与错误控制通道
+    # 9. 错误
     error_message: Optional[str]
 
 
@@ -56,27 +69,40 @@ def create_initial_state(
     query: str,
     session_id: str = "default_session",
     chat_history: Optional[List[Dict[str, str]]] = None,
-    max_retries: int = 2
+    max_retries: int = 2,
+    max_generation_retries: Optional[int] = None,
 ) -> AgenticRAGState:
-    """创建并初始化标准状态字典的辅助构建函数"""
+    """创建初始状态"""
+    from app.core.config import settings
+    q = query.strip()
     return {
         "session_id": session_id,
-        "original_query": query.strip(),
+        "original_query": q,
         "chat_history": chat_history or [],
-        "transformed_query": query.strip(),
-        "multi_queries": [query.strip()],
+        "resolved_query": q,
+        "transformed_query": q,
+        "multi_queries": [],
+        "hyde_passage": None,
         "is_complex": False,
         "retrieved_docs": [],
         "formatted_context": "",
         "citations": [],
+        "kb_empty": False,
         "retrieval_grade": "init",
         "grade_reason": "",
-        "retry_count": 0,
+        "retrieval_retries": 0,
         "max_retries": max_retries,
+        "generation_retries": 0,
+        "max_generation_retries": (settings.rag.GENERATION_MAX_RETRIES
+                                   if max_generation_retries is None else max_generation_retries),
+        "retry_count": 0,
         "web_fallback_needed": False,
+        "web_fallback_external": False,
         "generated_answer": "",
+        "answer_attempts": [],
+        "audit_status": "init",
         "hallucination_passed": True,
         "hallucination_critique": "",
         "steps_timeline": [],
-        "error_message": None
+        "error_message": None,
     }

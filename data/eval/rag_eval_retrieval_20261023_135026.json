@@ -1,0 +1,1197 @@
+{
+  "name": "kb_eval_v1",
+  "dataset_sha256": "ec239b5a0be1f360",
+  "timestamp": "2026-10-23 13:50:26",
+  "mode": "retrieval",
+  "embedding_signature": "api:https://dashscope.aliyuncs.com/compatible-mode/v1:text-embedding-v4",
+  "llm_model": "deepseek-chat",
+  "reranker_model": "gte-rerank-v2",
+  "warnings": [
+    "评测集由 Claude 根据文档起草、规模较小（约 40 题），需人工复核；判官与被测系统可能是同一模型，存在自评偏差。"
+  ],
+  "retrieval": {
+    "k": 5,
+    "baseline": "hybrid_rerank",
+    "n_answerable": 37,
+    "n_unanswerable": 6,
+    "configs": [
+      {
+        "name": "dense_only",
+        "label": "只用向量",
+        "hit@1": 0.7297297297297297,
+        "hit@3": 0.9459459459459459,
+        "hit@5": 0.972972972972973,
+        "mrr": 0.8355855855855856,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.6538461538461539,
+            "hit@3": 0.9230769230769231,
+            "hit@5": 0.9615384615384616,
+            "mrr": 0.7852564102564104,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.8,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 0.9,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "dense_only",
+          "label": "只用向量",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.0,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            0.01126126126126126,
+            -0.07882882882882884,
+            0.0945945945945946
+          ],
+          "hit@5": [
+            0.05405405405405406,
+            -0.05405405405405406,
+            0.16216216216216217
+          ]
+        }
+      },
+      {
+        "name": "bm25_only",
+        "label": "只用 BM25",
+        "hit@1": 0.5405405405405406,
+        "hit@3": 0.7027027027027027,
+        "hit@5": 0.8378378378378378,
+        "mrr": 0.6423423423423423,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.5384615384615384,
+            "hit@3": 0.7692307692307693,
+            "hit@5": 0.8846153846153846,
+            "mrr": 0.666025641025641,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.0,
+            "hit@3": 0.0,
+            "hit@5": 0.4,
+            "mrr": 0.09,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "bm25_only",
+          "label": "只用 BM25",
+          "dense_weight": 0.0,
+          "sparse_weight": 1.0,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.18198198198198198,
+            -0.32882882882882886,
+            -0.02117117117117118
+          ],
+          "hit@5": [
+            -0.08108108108108109,
+            -0.21621621621621623,
+            0.02702702702702703
+          ]
+        }
+      },
+      {
+        "name": "hybrid_1_0.8",
+        "label": "融合 1:0.8（原默认）",
+        "hit@1": 0.6216216216216216,
+        "hit@3": 0.918918918918919,
+        "hit@5": 0.9459459459459459,
+        "mrr": 0.7545045045045046,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.5769230769230769,
+            "hit@3": 0.9230769230769231,
+            "hit@5": 0.9615384615384616,
+            "mrr": 0.7339743589743589,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.4,
+            "hit@3": 0.8,
+            "hit@5": 0.8,
+            "mrr": 0.5666666666666667,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_1_0.8",
+          "label": "融合 1:0.8（原默认）",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.8,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.06981981981981983,
+            -0.17342342342342343,
+            0.0472972972972973
+          ],
+          "hit@5": [
+            0.02702702702702703,
+            -0.05405405405405406,
+            0.10810810810810811
+          ]
+        }
+      },
+      {
+        "name": "hybrid_1_1",
+        "label": "融合 1:1",
+        "hit@1": 0.6216216216216216,
+        "hit@3": 0.8918918918918919,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.7454954954954954,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.5769230769230769,
+            "hit@3": 0.9230769230769231,
+            "hit@5": 0.9230769230769231,
+            "mrr": 0.7243589743589743,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.4,
+            "hit@3": 0.6,
+            "hit@5": 0.8,
+            "mrr": 0.55,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_1_1",
+          "label": "融合 1:1",
+          "dense_weight": 1.0,
+          "sparse_weight": 1.0,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.07882882882882884,
+            -0.18243243243243243,
+            0.038288288288288286
+          ],
+          "hit@5": [
+            0.0,
+            -0.08108108108108109,
+            0.08108108108108109
+          ]
+        }
+      },
+      {
+        "name": "hybrid_0.8_1",
+        "label": "融合 0.8:1（BM25 稍重）",
+        "hit@1": 0.5945945945945946,
+        "hit@3": 0.8918918918918919,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.7306306306306307,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.5769230769230769,
+            "hit@3": 0.9230769230769231,
+            "hit@5": 0.9230769230769231,
+            "mrr": 0.7243589743589743,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.2,
+            "hit@3": 0.6,
+            "hit@5": 0.8,
+            "mrr": 0.44000000000000006,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_0.8_1",
+          "label": "融合 0.8:1（BM25 稍重）",
+          "dense_weight": 0.8,
+          "sparse_weight": 1.0,
+          "rerank": false,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.0936936936936937,
+            -0.19909909909909912,
+            0.027027027027027025
+          ],
+          "hit@5": [
+            0.0,
+            -0.08108108108108109,
+            0.08108108108108109
+          ]
+        }
+      },
+      {
+        "name": "hybrid_rerank",
+        "label": "融合 1:0.8 + 重排（线上配置）",
+        "hit@1": 0.7567567567567568,
+        "hit@3": 0.8648648648648649,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.8243243243243243,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.6923076923076923,
+            "hit@3": 0.8076923076923077,
+            "hit@5": 0.8846153846153846,
+            "mrr": 0.7692307692307693,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.8,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 0.9,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_rerank",
+          "label": "融合 1:0.8 + 重排（线上配置）",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.8,
+          "rerank": true,
+          "multi_query": false,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "hit@5": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      {
+        "name": "hybrid_rerank_mq",
+        "label": "线上配置 + 多查询扩展",
+        "hit@1": 0.7567567567567568,
+        "hit@3": 0.8648648648648649,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.8243243243243243,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.6923076923076923,
+            "hit@3": 0.8076923076923077,
+            "hit@5": 0.8846153846153846,
+            "mrr": 0.7692307692307693,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.8,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 0.9,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_rerank_mq",
+          "label": "线上配置 + 多查询扩展",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.8,
+          "rerank": true,
+          "multi_query": true,
+          "hyde": false
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "hit@5": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      {
+        "name": "hybrid_rerank_hyde",
+        "label": "线上配置 + HyDE",
+        "hit@1": 0.7567567567567568,
+        "hit@3": 0.8378378378378378,
+        "hit@5": 0.918918918918919,
+        "mrr": 0.8162162162162162,
+        "n": 37,
+        "by_lang": {
+          "en": {
+            "hit@1": 0.6923076923076923,
+            "hit@3": 0.7692307692307693,
+            "hit@5": 0.8846153846153846,
+            "mrr": 0.7576923076923077,
+            "n": 26
+          },
+          "zh": {
+            "hit@1": 1.0,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 1.0,
+            "n": 6
+          },
+          "zh-cross": {
+            "hit@1": 0.8,
+            "hit@3": 1.0,
+            "hit@5": 1.0,
+            "mrr": 0.9,
+            "n": 5
+          }
+        },
+        "settings": {
+          "name": "hybrid_rerank_hyde",
+          "label": "线上配置 + HyDE",
+          "dense_weight": 1.0,
+          "sparse_weight": 0.8,
+          "rerank": true,
+          "multi_query": false,
+          "hyde": true
+        },
+        "delta_vs_baseline": {
+          "mrr": [
+            -0.008108108108108109,
+            -0.024324324324324322,
+            0.0
+          ],
+          "hit@5": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    ],
+    "per_question": [
+      {
+        "id": "p01",
+        "question": "In LLaMA2-7B, which two feature dimensions contain massive activations?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p02",
+        "question": "Which feature dimensions hold massive activations in LLaMA2-13B, and at which tokens?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 2,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p03",
+        "question": "Which feature dimensions contain massive activations in Mixtral-8x7B?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p04",
+        "question": "In LLaMA2-7B, in which layer do massive activations first appear and until which layer do they stay nearly constant?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p05",
+        "question": "What loose definition does the paper give for a massive activation?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p06",
+        "question": "What happens to LLaMA2-7B when its massive activations are set to zero?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 4,
+          "hybrid_rerank_mq": 4,
+          "hybrid_rerank_hyde": 4
+        }
+      },
+      {
+        "id": "p07",
+        "question": "What is the effect of setting massive activations to their mean values?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p08",
+        "question": "How do massive activations differ conceptually from outlier features?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 3,
+          "hybrid_0.8_1": 3,
+          "hybrid_rerank": 2,
+          "hybrid_rerank_mq": 2,
+          "hybrid_rerank_hyde": 2
+        }
+      },
+      {
+        "id": "p09",
+        "question": "How many outlier features did the authors find in LLaMA2-7B and LLaMA2-13B, and do they overlap with massive activation dimensions?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p10",
+        "question": "According to Table 1, what is the top-1 activation magnitude in Mixtral-8x7B?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 2,
+          "hybrid_rerank_mq": 2,
+          "hybrid_rerank_hyde": 2
+        }
+      },
+      {
+        "id": "p11",
+        "question": "What data did the authors use to locate massive activations across layers?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": null,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 3,
+          "hybrid_0.8_1": 3,
+          "hybrid_rerank": 2,
+          "hybrid_rerank_mq": 2,
+          "hybrid_rerank_hyde": 5
+        }
+      },
+      {
+        "id": "p12",
+        "question": "Why might massive activations appear at the starting token?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 4,
+          "bm25_only": null,
+          "hybrid_1_0.8": 4,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "p13",
+        "question": "Why might LLMs store these biases in delimiter tokens?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p14",
+        "question": "In LLaMA2-7B, from which layer is attention concentrated on the tokens with massive activations?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 3,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "p15",
+        "question": "What normalization variant does LLaMA2 use?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 3,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p16",
+        "question": "What do the value updates from the tokens with massive activations look like across different tokens?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p17",
+        "question": "How do the authors add explicit attention biases to self-attention?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 3,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "p18",
+        "question": "Which three GPT-2 variants were trained in the explicit attention bias experiment?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": 3,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p19",
+        "question": "Do massive activations appear in GPT-2 trained with explicit attention biases?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 2,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 4,
+          "hybrid_rerank_mq": 4,
+          "hybrid_rerank_hyde": 4
+        }
+      },
+      {
+        "id": "p20",
+        "question": "Which ViT-L models exhibit massive activations and which do not?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": 2,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p21",
+        "question": "What is observed in MAE ViT-L instead of massive activations?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 4,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p22",
+        "question": "At which layer was the intervention on CLIP ViT-L performed?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p23",
+        "question": "Where do massive activations appear in DINOv2-reg ViT-G?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 5,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 3,
+          "hybrid_0.8_1": 3,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p24",
+        "question": "What is the ImageNet accuracy of DINOv2-reg ViT-G before and after fixing register features to their means?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 2,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p25",
+        "question": "What practical implication does the paper mention for model quantization?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 5,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "p26",
+        "question": "Why were the explicit attention bias experiments limited to a small GPT-2?",
+        "lang": "en",
+        "answerable": true,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 3,
+          "hybrid_0.8_1": 3,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "x01",
+        "question": "LLaMA2-7B 中的大规模激活（massive activations）出现在哪两个特征维度？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 4,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "x02",
+        "question": "把大规模激活置零会对 LLaMA2-7B 造成什么影响？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 2,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": 2,
+          "hybrid_rerank_mq": 2,
+          "hybrid_rerank_hyde": 2
+        }
+      },
+      {
+        "id": "x03",
+        "question": "这篇论文发表在哪个会议？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": null,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "x04",
+        "question": "MAE ViT-L 中有没有观察到大规模激活？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 5,
+          "hybrid_1_0.8": 2,
+          "hybrid_1_1": 2,
+          "hybrid_0.8_1": 2,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "x05",
+        "question": "为什么作者认为大规模激活起到了偏置项（bias）的作用？",
+        "lang": "zh-cross",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": null,
+          "hybrid_1_0.8": 3,
+          "hybrid_1_1": 4,
+          "hybrid_0.8_1": 5,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t01",
+        "question": "差旅报销需要提交哪些材料？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t02",
+        "question": "出差结束后多久内要提交报销？逾期怎么办？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t03",
+        "question": "一线城市的住宿报销标准是多少？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t04",
+        "question": "出差伙食补助是多少？需要发票吗？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t05",
+        "question": "没走审批就出差，费用能报销吗？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "t06",
+        "question": "报销款多久能到账？",
+        "lang": "zh",
+        "answerable": true,
+        "ranks": {
+          "dense_only": 1,
+          "bm25_only": 1,
+          "hybrid_1_0.8": 1,
+          "hybrid_1_1": 1,
+          "hybrid_0.8_1": 1,
+          "hybrid_rerank": 1,
+          "hybrid_rerank_mq": 1,
+          "hybrid_rerank_hyde": 1
+        }
+      },
+      {
+        "id": "u01",
+        "question": "公司股票期权怎么行权？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u02",
+        "question": "加班费怎么计算？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u03",
+        "question": "国际出差的住宿标准是多少？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u04",
+        "question": "差旅报销可以用支付宝收款吗？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u05",
+        "question": "Does the paper study massive activations in Google's Gemini models?",
+        "lang": "en",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      },
+      {
+        "id": "u06",
+        "question": "这篇论文用了多少块 GPU 训练 LLaMA2-70B？",
+        "lang": "zh",
+        "answerable": false,
+        "ranks": {
+          "dense_only": null,
+          "bm25_only": null,
+          "hybrid_1_0.8": null,
+          "hybrid_1_1": null,
+          "hybrid_0.8_1": null,
+          "hybrid_rerank": null,
+          "hybrid_rerank_mq": null,
+          "hybrid_rerank_hyde": null
+        }
+      }
+    ],
+    "threshold_analysis": {
+      "current_threshold": 0.15,
+      "grid": [
+        {
+          "threshold": 0.0,
+          "answerable_hit@5": 0.918918918918919,
+          "unanswerable_filtered": 0.0
+        },
+        {
+          "threshold": 0.05,
+          "answerable_hit@5": 0.8918918918918919,
+          "unanswerable_filtered": 0.16666666666666666
+        },
+        {
+          "threshold": 0.1,
+          "answerable_hit@5": 0.8918918918918919,
+          "unanswerable_filtered": 0.3333333333333333
+        },
+        {
+          "threshold": 0.15,
+          "answerable_hit@5": 0.8918918918918919,
+          "unanswerable_filtered": 0.3333333333333333
+        },
+        {
+          "threshold": 0.2,
+          "answerable_hit@5": 0.8648648648648649,
+          "unanswerable_filtered": 0.8333333333333334
+        },
+        {
+          "threshold": 0.3,
+          "answerable_hit@5": 0.8648648648648649,
+          "unanswerable_filtered": 0.8333333333333334
+        },
+        {
+          "threshold": 0.4,
+          "answerable_hit@5": 0.8108108108108109,
+          "unanswerable_filtered": 1.0
+        },
+        {
+          "threshold": 0.5,
+          "answerable_hit@5": 0.7027027027027027,
+          "unanswerable_filtered": 1.0
+        },
+        {
+          "threshold": 0.6,
+          "answerable_hit@5": 0.6486486486486487,
+          "unanswerable_filtered": 1.0
+        }
+      ],
+      "relevant_top_score": {
+        "n": 34,
+        "min": 0.0295,
+        "median": 0.7885,
+        "max": 0.9538
+      },
+      "unanswerable_top_score": {
+        "n": 6,
+        "min": 0.0061,
+        "median": 0.1852,
+        "max": 0.3845
+      }
+    }
+  },
+  "end_to_end": null
+}

@@ -1,5 +1,5 @@
 """
-企业级 Agentic RAG 智能知识库平台应用主入口 (Application Entrypoint)
+Agentic RAG 知识库平台应用入口 (Application Entrypoint)
 职责：
 1. 装配 FastAPI 顶层应用实例与现代化 Lifespan 生命周期管理器 (启动预热、目录检测、优雅停机)。
 2. 配置生产级 CORS 跨域资源共享中间件，无缝适配 Vue/React/Web 前端生态。
@@ -8,6 +8,7 @@
 5. 集成 Uvicorn 异步 ASGI 服务器快速启动引导。
 """
 
+import asyncio
 import os
 import time
 import logging
@@ -50,6 +51,21 @@ async def lifespan(app: FastAPI):
     logger.info(f"[Startup] 密集向量模型: {settings.embedding.MODEL_NAME}")
     logger.info(f"[Startup] 交叉重排模型: {settings.reranker.MODEL_NAME}")
 
+    # 预热分词器（jieba 首次加载约 0.5~1 秒，放到线程池，避免阻塞事件循环）
+    try:
+        import jieba  # noqa: F401
+        await asyncio.to_thread(jieba.initialize)
+    except Exception:
+        pass
+
+    # 按文档清单重建全部索引（DATA-2 / DATA-6：上传与重启共用同一抽取函数，doc_id 保持不变）
+    try:
+        from app.rag.knowledge_base import knowledge_base
+        result = await knowledge_base.rebuild_from_disk()
+        logger.info(f"[Startup] 知识库重建完成: {result}")
+    except Exception as e:
+        logger.error(f"[Startup] 知识库重建失败: {e}", exc_info=True)
+
     start_time = time.time()
     yield  # 服务运行中，处理外部请求
 
@@ -66,7 +82,7 @@ app = FastAPI(
     version="1.0.0",
     description=(
         "基于 LangGraph 自省状态机与混合检索（BM25 + Qdrant + RRF + Cross-Encoder + Self-RAG）"
-        "的企业级 Agentic RAG 智能知识库平台。"
+        "的 Agentic RAG 知识库平台。"
     ),
     docs_url="/docs",
     redoc_url="/redoc",
@@ -74,13 +90,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# 配置生产级跨域访问控制 (CORS)
+# 跨域访问控制 (SEC-4)
+# 原配置是 allow_origins=["*"] + allow_credentials=True：任何网页都能从你的浏览器调用本机接口。
+# 现在只允许白名单来源（默认本机前端），不携带凭据；管理接口另有令牌/本机校验。
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 允许跨域源，生产环境可收敛至具体前端域名
-    allow_credentials=True,
-    allow_methods=["*"],  # 允许所有 HTTP 方法 (GET, POST, OPTIONS 等)
-    allow_headers=["*"],  # 允许所有标头
+    allow_origins=settings.security.CORS_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["Content-Type", "X-Admin-Token"],
 )
 
 # 挂载业务路由
@@ -142,10 +160,11 @@ async def health_check():
 # =============================================================================
 
 if __name__ == "__main__":
+    # 默认只监听本机 (127.0.0.1)；需要局域网访问时设置环境变量 HOST=0.0.0.0，并务必配置 ADMIN_TOKEN
     uvicorn.run(
         "main:app",
-        host="0.0.0.0",
-        port=8000,
+        host=os.getenv("HOST", "127.0.0.1"),
+        port=int(os.getenv("PORT", "8000")),
         reload=settings.DEBUG,
         workers=1
     )

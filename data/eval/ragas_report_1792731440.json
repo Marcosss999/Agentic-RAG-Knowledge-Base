@@ -1,0 +1,52 @@
+{
+  "total_samples": 2,
+  "evaluation_engine": "Hybrid LLM-as-a-Judge & Grounded Mathematical Metric Suite",
+  "average_metrics": {
+    "faithfulness": 1.0,
+    "answer_relevancy": 0.975,
+    "context_precision": 1.0,
+    "context_recall": 1.0,
+    "overall_score": 0.9938
+  },
+  "timestamp": "2026-10-23 12:57:20",
+  "details": [
+    {
+      "sample_id": 1,
+      "query": "系统的父子分块切分大小分别是多少？",
+      "ground_truth": "母块1500字，子块300字。",
+      "metrics": {
+        "context_recall": 1.0,
+        "context_precision": 1.0,
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "overall_score": 1.0,
+        "evaluated_at": 1792731436.3945062
+      },
+      "audit_reasons": {
+        "faithfulness_reason": "回答中的两个命题（母块尺寸1500字符、子块尺寸300字符）均可在参考证据中找到明确依据，且未引入矛盾信息。",
+        "answer_relevancy_reason": "回答直接、准确地给出了用户所问的父子分块切分大小（母块1500字符，子块300字符），语义完全相关且切题。",
+        "context_precision_reason": "唯一召回片段直接、完整地回答了用户问题，明确给出母块1500字、子块300字，无噪声或无关内容，排序质量最优。",
+        "context_recall_reason": "检索到的上下文明确包含母块1500字和子块300字，与标准答案完全一致。"
+      }
+    },
+    {
+      "sample_id": 2,
+      "query": "检索融合阶段采用了什么算法抹平量纲差异？",
+      "ground_truth": "RRF互逆排名融合算法(k=60)。",
+      "metrics": {
+        "context_recall": 1.0,
+        "context_precision": 1.0,
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.95,
+        "overall_score": 0.9875,
+        "evaluated_at": 1792731440.3547342
+      },
+      "audit_reasons": {
+        "faithfulness_reason": "回答仅包含一个事实命题：检索融合阶段采用了RRF互逆排名融合算法，平滑常数k=60。参考证据明确说明利用RRF互逆排名算法进行名次合并，常数取60，因此该命题完全得到支持。",
+        "answer_relevancy_reason": "回答直接针对用户问题，明确指出检索融合阶段采用了RRF算法，并补充了平滑常数k=60，切题且信息完整。",
+        "context_precision_reason": "唯一召回片段直接命中用户问题：明确说明采用RRF互逆排名算法对BM25与向量名次进行无量纲合并，并给出常数60，完整回答了融合阶段抹平量纲差异的算法，排序质量最优。",
+        "context_recall_reason": "检索到的上下文明确提及RRF互逆排名算法、无量纲合并（抹平量纲差异）以及常数60，与标准答案完全一致。"
+      }
+    }
+  ]
+}

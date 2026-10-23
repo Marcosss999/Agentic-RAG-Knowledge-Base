@@ -1,0 +1,539 @@
+{
+  "name": "kb_eval_v1",
+  "version": 1,
+  "description": "知识库评测集 v1：基于两份文档（Massive Activations 论文、虚构的差旅报销制度）编写，含可回答题与不可回答题。题目与证据由 Claude 起草，需人工复核。",
+  "relevance_rule": "检索结果（子块或其母块）去掉所有空白并转小写后，包含任意一条 evidence（同样处理）即视为命中",
+  "sources": [
+    {
+      "key": "paper",
+      "path": "eval_sets/docs/massive_activations.pdf",
+      "doc_name": "Massive Activations in Large Language Models.pdf"
+    },
+    {
+      "key": "travel",
+      "path": "eval_sets/docs/测试用_差旅报销制度.txt",
+      "doc_name": "测试用_差旅报销制度.txt"
+    }
+  ],
+  "items": [
+    {
+      "id": "p01",
+      "question": "In LLaMA2-7B, which two feature dimensions contain massive activations?",
+      "reference_answer": "Feature dimensions 1415 and 2533.",
+      "evidence": [
+        "two feature dimensions (1415 and 2533)",
+        "(1415, 2533)"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p02",
+      "question": "Which feature dimensions hold massive activations in LLaMA2-13B, and at which tokens?",
+      "reference_answer": "Dimensions 2100 and 4743, located only at the starting token.",
+      "evidence": [
+        "2100 and 4743",
+        "(2100, 4743)"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p03",
+      "question": "Which feature dimensions contain massive activations in Mixtral-8x7B?",
+      "reference_answer": "Dimensions 2070 and 3398.",
+      "evidence": [
+        "2070 and 3398",
+        "(2070,\n3398)"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p04",
+      "question": "In LLaMA2-7B, in which layer do massive activations first appear and until which layer do they stay nearly constant?",
+      "reference_answer": "They first appear in layer 2 and remain nearly constant until layer 30.",
+      "evidence": [
+        "first appear in layer 2 and remain nearly constant values until layer 30"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p05",
+      "question": "What loose definition does the paper give for a massive activation?",
+      "reference_answer": "An activation whose magnitude exceeds 100 and is at least (or around) 1,000 times larger than the median magnitude of its hidden state.",
+      "evidence": [
+        "magnitude surpasses 100 and is at least or around 1,000 times larger than the median"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p06",
+      "question": "What happens to LLaMA2-7B when its massive activations are set to zero?",
+      "reference_answer": "Performance collapses: perplexity on WikiText, C4 and PG-19 becomes infinite and mean zero-shot accuracy drops from 68.95% to 36.75%.",
+      "evidence": [
+        "Set to zero inf inf inf 36.75%",
+        "significant degradation in model performance"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "number"
+    },
+    {
+      "id": "p07",
+      "question": "What is the effect of setting massive activations to their mean values?",
+      "reference_answer": "Negligible change in perplexity and zero-shot accuracy, showing they act like constant bias terms.",
+      "evidence": [
+        "negligible changes in perplexity and zero-shot accuracy"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p08",
+      "question": "How do massive activations differ conceptually from outlier features?",
+      "reference_answer": "A massive activation is a single scalar value at specific tokens, while an outlier feature is a vector (a feature dimension) with large values at most tokens.",
+      "evidence": [
+        "a massive activation is a scalar value, determined jointly by the sequence and feature dimensions"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p09",
+      "question": "How many outlier features did the authors find in LLaMA2-7B and LLaMA2-13B, and do they overlap with massive activation dimensions?",
+      "reference_answer": "10 and 25 outlier features respectively, and none of them correspond to the feature dimensions of massive activations.",
+      "evidence": [
+        "We discover 10 and 25 outlier features in these two models respectively"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "number"
+    },
+    {
+      "id": "p10",
+      "question": "According to Table 1, what is the top-1 activation magnitude in Mixtral-8x7B?",
+      "reference_answer": "7100.0 (median about 0.3).",
+      "evidence": [
+        "Mixtral-8x7B 7100.0 5296.0"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "number"
+    },
+    {
+      "id": "p11",
+      "question": "What data did the authors use to locate massive activations across layers?",
+      "reference_answer": "100 sequences of 4,096 tokens each, collected from RedPajama.",
+      "evidence": [
+        "we collect 100 sequences (each with 4,096 tokens) from RedPajama"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p12",
+      "question": "Why might massive activations appear at the starting token?",
+      "reference_answer": "Every autoregressive training instance contains an initial token, and it is the only token used in all forward passes within a sequence.",
+      "evidence": [
+        "the starting token is the only token used in all forward passes within a sequence"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "reasoning"
+    },
+    {
+      "id": "p13",
+      "question": "Why might LLMs store these biases in delimiter tokens?",
+      "reference_answer": "Delimiter tokens carry relatively low semantic value, so repurposing them to store biases is low cost.",
+      "evidence": [
+        "relatively low semantic value of these tokens"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "reasoning"
+    },
+    {
+      "id": "p14",
+      "question": "In LLaMA2-7B, from which layer is attention concentrated on the tokens with massive activations?",
+      "reference_answer": "From layer 3 onward (e.g., layer 31), attention mostly concentrates on the two tokens associated with massive activations.",
+      "evidence": [
+        "in layer 3 and deeper layers (e.g., layer 31), attention is mostly concentrated"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p15",
+      "question": "What normalization variant does LLaMA2 use?",
+      "reference_answer": "RMSNorm, a variant of layer normalization.",
+      "evidence": [
+        "LLaMA2 uses a variant of layer normalization: RMSNorm"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p16",
+      "question": "What do the value updates from the tokens with massive activations look like across different tokens?",
+      "reference_answer": "They are nearly identical across tokens, acting as additive bias terms in the attention output.",
+      "evidence": [
+        "are nearly identical across tokens"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p17",
+      "question": "How do the authors add explicit attention biases to self-attention?",
+      "reference_answer": "They add learnable key and value vectors k' and v' per head, concatenated with the key and value matrices.",
+      "evidence": [
+        "concatenated with the key and value matrices"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p18",
+      "question": "Which three GPT-2 variants were trained in the explicit attention bias experiment?",
+      "reference_answer": "A standard GPT-2, GPT-2 prepended with a sink token, and GPT-2 with explicit attention biases.",
+      "evidence": [
+        "GPT-2 prepended with a sink token"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p19",
+      "question": "Do massive activations appear in GPT-2 trained with explicit attention biases?",
+      "reference_answer": "No. They disappear, while the standard and sink-token GPT-2 still have them; all three reach the same performance.",
+      "evidence": [
+        "in GPT-2 with explicit attention biases, massive activations disappear"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p20",
+      "question": "Which ViT-L models exhibit massive activations and which do not?",
+      "reference_answer": "CLIP and DINOv2 ViT-L exhibit them; MAE ViT-L does not.",
+      "evidence": [
+        "we do not observe massive activations in MAE ViT-L",
+        "massive activations exist in CLIP and DINOv2 ViT-L"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p21",
+      "question": "What is observed in MAE ViT-L instead of massive activations?",
+      "reference_answer": "Feature dimension 927 has uniformly large values across all tokens.",
+      "evidence": [
+        "a feature dimension (927) exhibits uniformly large values across all tokens"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p22",
+      "question": "At which layer was the intervention on CLIP ViT-L performed?",
+      "reference_answer": "Layer 13, where massive activations first appear in that model.",
+      "evidence": [
+        "The intervention is conducted on layer\n13"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "number"
+    },
+    {
+      "id": "p23",
+      "question": "Where do massive activations appear in DINOv2-reg ViT-G?",
+      "reference_answer": "Exclusively within a fixed register token, register 3, not in patch tokens.",
+      "evidence": [
+        "exclusively within a fixed register token, i.e., register 3"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p24",
+      "question": "What is the ImageNet accuracy of DINOv2-reg ViT-G before and after fixing register features to their means?",
+      "reference_answer": "87.0% in both cases.",
+      "evidence": [
+        "Original 81.9 84.8 86.3 87.0"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "number"
+    },
+    {
+      "id": "p25",
+      "question": "What practical implication does the paper mention for model quantization?",
+      "reference_answer": "Large-magnitude activations are a major challenge for quantizing LLMs; the paper identifies a new type of outlier activation relevant to compression.",
+      "evidence": [
+        "major challenge in effectively quantizing LLMs"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "p26",
+      "question": "Why were the explicit attention bias experiments limited to a small GPT-2?",
+      "reference_answer": "Because of computational resource constraints.",
+      "evidence": [
+        "limited to a small GPT-2 model due to computational resource constraints"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "en",
+      "category": "fact"
+    },
+    {
+      "id": "x01",
+      "question": "LLaMA2-7B 中的大规模激活（massive activations）出现在哪两个特征维度？",
+      "reference_answer": "1415 和 2533 两个特征维度。",
+      "evidence": [
+        "two feature dimensions (1415 and 2533)",
+        "(1415, 2533)"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "zh-cross",
+      "category": "fact"
+    },
+    {
+      "id": "x02",
+      "question": "把大规模激活置零会对 LLaMA2-7B 造成什么影响？",
+      "reference_answer": "模型性能崩溃：困惑度变为无穷大，平均零样本准确率从 68.95% 降到 36.75%。",
+      "evidence": [
+        "Set to zero inf inf inf 36.75%",
+        "significant degradation in model performance"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "zh-cross",
+      "category": "fact"
+    },
+    {
+      "id": "x03",
+      "question": "这篇论文发表在哪个会议？",
+      "reference_answer": "COLM 2024（First Conference on Language Modeling）。",
+      "evidence": [
+        "First Conference on Language Modeling (COLM), 2024"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "zh-cross",
+      "category": "fact"
+    },
+    {
+      "id": "x04",
+      "question": "MAE ViT-L 中有没有观察到大规模激活？",
+      "reference_answer": "没有；MAE ViT-L 中观察到的是第 927 个特征维度在所有 token 上都很大。",
+      "evidence": [
+        "we do not observe massive activations in MAE ViT-L",
+        "a feature dimension (927) exhibits uniformly large values across all tokens"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "zh-cross",
+      "category": "fact"
+    },
+    {
+      "id": "x05",
+      "question": "为什么作者认为大规模激活起到了偏置项（bias）的作用？",
+      "reference_answer": "把它们设为均值几乎不影响困惑度和零样本准确率，说明它们的取值是与输入无关的常数，作用类似偏置项。",
+      "evidence": [
+        "negligible changes in perplexity and zero-shot accuracy",
+        "functioning similarly to bias terms"
+      ],
+      "doc": "paper",
+      "answerable": true,
+      "lang": "zh-cross",
+      "category": "reasoning"
+    },
+    {
+      "id": "t01",
+      "question": "差旅报销需要提交哪些材料？",
+      "reference_answer": "审批通过的《出差申请单》、交通票据（机票行程单或火车票原件）、住宿增值税发票（抬头为公司全称）、本人签字的《差旅费报销单》。",
+      "evidence": [
+        "须提交以下材料"
+      ],
+      "doc": "travel",
+      "answerable": true,
+      "lang": "zh",
+      "category": "fact"
+    },
+    {
+      "id": "t02",
+      "question": "出差结束后多久内要提交报销？逾期怎么办？",
+      "reference_answer": "15 个自然日内；超过 15 日须附情况说明并经分管副总批准；超过 60 日不予报销。",
+      "evidence": [
+        "15 个自然日内提交报销申请"
+      ],
+      "doc": "travel",
+      "answerable": true,
+      "lang": "zh",
+      "category": "number"
+    },
+    {
+      "id": "t03",
+      "question": "一线城市的住宿报销标准是多少？",
+      "reference_answer": "每晚不超过 600 元，超出部分员工自行承担。",
+      "evidence": [
+        "一线城市住宿费每晚不超过 600 元"
+      ],
+      "doc": "travel",
+      "answerable": true,
+      "lang": "zh",
+      "category": "number"
+    },
+    {
+      "id": "t04",
+      "question": "出差伙食补助是多少？需要发票吗？",
+      "reference_answer": "每人每天 100 元，无需提供发票。",
+      "evidence": [
+        "每人每天 100 元标准发放伙食补助"
+      ],
+      "doc": "travel",
+      "answerable": true,
+      "lang": "zh",
+      "category": "number"
+    },
+    {
+      "id": "t05",
+      "question": "没走审批就出差，费用能报销吗？",
+      "reference_answer": "不能，未经审批的出差费用不予报销。",
+      "evidence": [
+        "未经审批的出差费用不予报销"
+      ],
+      "doc": "travel",
+      "answerable": true,
+      "lang": "zh",
+      "category": "fact"
+    },
+    {
+      "id": "t06",
+      "question": "报销款多久能到账？",
+      "reference_answer": "报销单经部门负责人、财务部审核后，财务部在 5 个工作日内打入员工工资卡。",
+      "evidence": [
+        "5 个工作日内将款项打入员工工资卡"
+      ],
+      "doc": "travel",
+      "answerable": true,
+      "lang": "zh",
+      "category": "number"
+    },
+    {
+      "id": "u01",
+      "question": "公司股票期权怎么行权？",
+      "reference_answer": "知识库中没有相关信息，应明确说明未找到，不应编造。",
+      "evidence": [],
+      "doc": null,
+      "answerable": false,
+      "lang": "zh",
+      "category": "unanswerable",
+      "note": "两份文档都未涉及"
+    },
+    {
+      "id": "u02",
+      "question": "加班费怎么计算？",
+      "reference_answer": "知识库中没有相关信息，应明确说明未找到，不应编造。",
+      "evidence": [],
+      "doc": null,
+      "answerable": false,
+      "lang": "zh",
+      "category": "unanswerable",
+      "note": "两份文档都未涉及"
+    },
+    {
+      "id": "u03",
+      "question": "国际出差的住宿标准是多少？",
+      "reference_answer": "知识库中没有相关信息，应明确说明未找到，不应编造。",
+      "evidence": [],
+      "doc": null,
+      "answerable": false,
+      "lang": "zh",
+      "category": "unanswerable",
+      "note": "制度只规定了一线城市与其他城市，未涉及国际出差；用来测试模型是否会把 600/400 元套用过来"
+    },
+    {
+      "id": "u04",
+      "question": "差旅报销可以用支付宝收款吗？",
+      "reference_answer": "知识库中没有相关信息，应明确说明未找到，不应编造。",
+      "evidence": [],
+      "doc": null,
+      "answerable": false,
+      "lang": "zh",
+      "category": "unanswerable",
+      "note": "制度只说打入工资卡，未说明能否用支付宝"
+    },
+    {
+      "id": "u05",
+      "question": "Does the paper study massive activations in Google's Gemini models?",
+      "reference_answer": "知识库中没有相关信息，应明确说明未找到，不应编造。",
+      "evidence": [],
+      "doc": null,
+      "answerable": false,
+      "lang": "en",
+      "category": "unanswerable",
+      "note": "论文没有研究 Gemini"
+    },
+    {
+      "id": "u06",
+      "question": "这篇论文用了多少块 GPU 训练 LLaMA2-70B？",
+      "reference_answer": "知识库中没有相关信息，应明确说明未找到，不应编造。",
+      "evidence": [],
+      "doc": null,
+      "answerable": false,
+      "lang": "zh",
+      "category": "unanswerable",
+      "note": "论文没有训练 LLaMA2-70B，也没有给出该信息"
+    }
+  ]
+}

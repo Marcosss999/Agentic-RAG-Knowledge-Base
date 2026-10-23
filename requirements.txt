@@ -1,0 +1,15 @@
+# Agentic RAG 知识库平台依赖
+# ENG-3：只保留代码实际用到的包；加上主版本上限，避免上游大版本升级静默破坏项目。
+# 精确复现某次运行环境请使用：pip freeze > requirements-lock.txt（在自己的虚拟环境里生成并提交）
+fastapi>=0.110.0,<1.0
+uvicorn>=0.28.0,<1.0
+pydantic>=2.6.0,<3.0
+python-multipart>=0.0.9,<1.0
+langgraph>=0.2.0,<2.0
+openai>=1.20.0,<3.0
+qdrant-client>=1.8.0,<2.0
+jieba>=0.42.1,<1.0
+numpy>=1.26.0,<3.0
+httpx>=0.27.0,<1.0
+pypdf>=4.0.0,<7.0
+typing_extensions>=4.8.0

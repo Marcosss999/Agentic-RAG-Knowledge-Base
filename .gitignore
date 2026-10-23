@@ -28,3 +28,10 @@ ENV/
 # OS files
 .DS_Store
 Thumbs.db
+
+# 运行时数据（本地缓存与文档清单）
+data/embedding_cache.sqlite
+
+# 临时备份
+_backup*/
+

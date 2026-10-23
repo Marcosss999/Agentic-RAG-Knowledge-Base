@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "embedding_signature": "api:https://dashscope.aliyuncs.com/compatible-mode/v1:text-embedding-v4",
+  "documents": {
+    "doc_597ca34721e0": {
+      "doc_name": "Massive Activations in Large Language Models.pdf",
+      "stored_file": "doc_597ca34721e0.pdf",
+      "sha256": "8147f23a8d92e990cbf7302aa2dac43fd3e3370710e7e10125bfa973e5ab11ff",
+      "size_bytes": 7567601,
+      "parent_chunks": 65,
+      "child_chunks": 343,
+      "created_at": 1792678191.1435275,
+      "updated_at": 1792678191.1435275
+    },
+    "doc_141e084d0e38": {
+      "doc_name": "测试用_差旅报销制度.txt",
+      "stored_file": "doc_141e084d0e38.txt",
+      "sha256": "fef35059c8899534809cb642b9a4769ec32bc194c26a66a18893eb9d1a64dacb",
+      "size_bytes": 1336,
+      "parent_chunks": 1,
+      "child_chunks": 2,
+      "created_at": 1792683521.8327322,
+      "updated_at": 1792683521.8327322
+    }
+  }
+}

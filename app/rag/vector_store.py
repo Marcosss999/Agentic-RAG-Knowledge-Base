@@ -1,273 +1,296 @@
 """
-密集语义向量存储与检索引擎 (Dense Vector Store Engine)
+密集向量存储与检索 (Dense Vector Store)
 职责：
-1. 负责子文档块（Child Chunk）高维语义向量的持久化存储与基于余弦相似度（Cosine Similarity）的高速最近邻搜索。
-2. 抽象 BaseVectorStore 统一接口，屏蔽底层向量库驱动差异。
-3. 深度适配 Qdrant 向量引擎（支持无依赖纯内存模式 ':memory:' 与生产环境独立集群模式），并附带零依赖纯 Python 矩阵备用方案。
-4. 提供开箱即用的语义检索门面：支持直接输入文本搜索（内部自动调用 Embedding 模型转向量）。
+1. 存储子块（Child Chunk）向量，提供余弦相似度 Top-K 检索。
+2. BaseVectorStore 统一接口，屏蔽 Qdrant 与纯内存实现的差异。
+3. Qdrant 支持独立服务模式与嵌入式 ':memory:' 模式；未安装 qdrant-client 时使用纯内存实现。
+
+本次修复：
+- RET-2：类型标注原本在类定义时求值，没装 qdrant-client 时整个模块 NameError，
+  "降级到纯内存"永远到不了。加 `from __future__ import annotations` 让标注延迟求值。
+- CONC-2：qdrant-client 是同步客户端，原来直接在 async 函数里调用会卡住事件循环。
+  现在通过 `asyncio.to_thread` 放到线程池执行；嵌入式 ':memory:' 模式内部是普通 Python 字典，
+  不保证线程安全，因此额外加一把锁串行化访问。
+- DATA-1：新增按 doc_id 删除，并由管理器在重复上传时先删后写。
+- API-2：集合维度不再写死，以第一次写入的向量维度为准；向量模型变化时由上层调用 reset() 重建。
 """
 
+from __future__ import annotations
+
+import asyncio
+import threading
 import uuid
 import logging
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
+
+import numpy as np
+
 from app.core.config import settings
 from app.core.llm_provider import llm_provider
 from app.models.schemas import ChildChunk, SearchResultItem, RetrievalSource
 
 logger = logging.getLogger(__name__)
 
-# 尝试导入 Qdrant 官方客户端
 try:
     from qdrant_client import QdrantClient
-    from qdrant_client.models import Distance, VectorParams, PointStruct
+    from qdrant_client.models import (
+        Distance, VectorParams, PointStruct, Filter, FieldCondition, MatchValue,
+    )
     QDRANT_AVAILABLE = True
 except ImportError:
     QDRANT_AVAILABLE = False
-    logger.warning("[VectorStore] 未检测到 qdrant-client，将使用内置纯内存备用向量引擎。")
+    logger.warning("[VectorStore] 未检测到 qdrant-client，将使用纯内存向量存储。")
 
 
 class BaseVectorStore(ABC):
-    """向量库统一抽象基类"""
+    """向量库统一抽象基类（所有方法要求 chunk.embedding 已计算好）"""
 
     @abstractmethod
-    async def add_chunks(self, chunks: List[ChildChunk]) -> int:
-        """存入带向量的子切片列表"""
-        pass
+    async def add_chunks(self, chunks: List[ChildChunk]) -> int: ...
 
     @abstractmethod
-    async def search_by_vector(self, query_vector: List[float], top_k: int = None) -> List[SearchResultItem]:
-        """通过向量特征执行 Top-K 余弦最近邻搜索"""
-        pass
+    async def search_by_vector(self, query_vector: List[float], top_k: int = None) -> List[SearchResultItem]: ...
 
     @abstractmethod
-    async def delete_by_doc_id(self, doc_id: str) -> bool:
-        """根据文档 ID 级联删除该文档的所有切片向量"""
-        pass
+    async def delete_by_doc_id(self, doc_id: str) -> bool: ...
 
     @abstractmethod
-    async def clear(self):
-        """清空向量库"""
-        pass
+    async def clear(self): ...
+
+    @abstractmethod
+    async def count(self) -> int: ...
+
+
+def _to_item(rank: int, score: float, chunk_id: str, doc_id: str, doc_name: str,
+             parent_id: Optional[str], content: str, metadata: Dict[str, Any]) -> SearchResultItem:
+    s = round(float(score), 4)
+    return SearchResultItem(
+        chunk_id=chunk_id, doc_id=doc_id, doc_name=doc_name, parent_id=parent_id,
+        content=content, score=s, source=RetrievalSource.DENSE_VECTOR, rank=rank,
+        metadata={**(metadata or {}), "raw_cosine_score": s},
+    )
 
 
 class QdrantVectorStore(BaseVectorStore):
-    """基于 Qdrant 的企业级向量引擎实现"""
+    """基于 Qdrant 的向量存储"""
 
     def __init__(self, collection_name: str = None, force_in_memory: bool = False):
         if not QDRANT_AVAILABLE:
             raise RuntimeError("qdrant-client 未安装，无法初始化 QdrantVectorStore")
-
         self.collection_name = collection_name or settings.storage.COLLECTION_NAME
-        self.dimension = settings.embedding.DIMENSION
+        self.dimension: Optional[int] = None
+        self.client, self.is_local = self._init_client(force_in_memory)
+        # 嵌入式模式不是线程安全的；独立服务模式走 HTTP，可以并发
+        self._lock = threading.Lock() if self.is_local else None
+        self._detect_existing_dimension()
 
-        # 初始化客户端连接：如果指定为 memory 或外部服务连不上，自动安全降级至 :memory:
-        self.client = self._init_client(force_in_memory)
-        self._ensure_collection()
-
-    def _init_client(self, force_in_memory: bool) -> QdrantClient:
+    def _init_client(self, force_in_memory: bool):
         if force_in_memory or settings.storage.VECTOR_DB_TYPE == "memory":
-            logger.info(f"[Qdrant] 启用嵌入式内存向量数据库模式 (:memory:)")
-            return QdrantClient(":memory:")
-
+            logger.info("[Qdrant] 使用嵌入式内存模式 (:memory:)")
+            return QdrantClient(":memory:"), True
         try:
-            client = QdrantClient(
-                host=settings.storage.QDRANT_HOST,
-                port=settings.storage.QDRANT_PORT,
-                timeout=2.0
-            )
-            # 主动试探远程端口连通性
+            client = QdrantClient(host=settings.storage.QDRANT_HOST, port=settings.storage.QDRANT_PORT, timeout=2.0)
             client.get_collections()
-            logger.info(f"[Qdrant] 成功连接至独立 Qdrant 集群: {settings.storage.QDRANT_HOST}:{settings.storage.QDRANT_PORT}")
-            return client
+            logger.info(f"[Qdrant] 已连接 Qdrant 服务: {settings.storage.QDRANT_HOST}:{settings.storage.QDRANT_PORT}")
+            return client, False
         except Exception as e:
-            logger.warning(f"[Qdrant] 无法连接到远程 Qdrant 服务 ({e})，为保障单机开发平滑运行，已自动降级为内置内存模式 (:memory:)")
-            return QdrantClient(":memory:")
+            # API-5：若系统开了代理，访问 localhost 也可能被代理拦截（返回 502），需设置 NO_PROXY=localhost,127.0.0.1
+            logger.warning(f"[Qdrant] 无法连接 Qdrant 服务 ({e})，降级为嵌入式内存模式 (:memory:)。"
+                           f"如果本机确实运行着 Qdrant，请检查是否被系统代理拦截（设置 NO_PROXY=localhost,127.0.0.1）。")
+            return QdrantClient(":memory:"), True
 
-    def _ensure_collection(self):
-        """确保目标 Collection 存在且配置正确的余弦距离度量"""
+    async def _call(self, fn, *args, **kwargs):
+        """在线程池中执行同步的 qdrant 调用；嵌入式模式下串行化"""
+        def run():
+            if self._lock is None:
+                return fn(*args, **kwargs)
+            with self._lock:
+                return fn(*args, **kwargs)
+        return await asyncio.to_thread(run)
+
+    def _detect_existing_dimension(self):
         try:
-            collections = [c.name for c in self.client.get_collections().collections]
-            if self.collection_name not in collections:
-                self.client.create_collection(
-                    collection_name=self.collection_name,
-                    vectors_config=VectorParams(size=self.dimension, distance=Distance.COSINE)
-                )
-                logger.info(f"[Qdrant] 成功创建向量集合: {self.collection_name}, 向量维度: {self.dimension}")
+            names = [c.name for c in self.client.get_collections().collections]
+            if self.collection_name in names:
+                info = self.client.get_collection(self.collection_name)
+                self.dimension = info.config.params.vectors.size
         except Exception as e:
-            logger.error(f"[Qdrant] 初始化集合失败: {e}")
-            raise
+            logger.debug(f"[Qdrant] 读取已有集合维度失败: {e}")
+
+    def _ensure_collection(self, dim: int):
+        if self.dimension == dim:
+            return
+        if self.dimension is not None and self.dimension != dim:
+            raise ValueError(
+                f"向量维度不一致：集合为 {self.dimension} 维，新向量为 {dim} 维。"
+                f"更换向量模型后需要重建索引（见缺陷追踪 API-2）。")
+        names = [c.name for c in self.client.get_collections().collections]
+        if self.collection_name not in names:
+            self.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config=VectorParams(size=dim, distance=Distance.COSINE),
+            )
+            logger.info(f"[Qdrant] 创建集合 {self.collection_name}，维度 {dim}")
+        self.dimension = dim
 
     async def add_chunks(self, chunks: List[ChildChunk]) -> int:
         if not chunks:
             return 0
+        dim = len(chunks[0].embedding)
+        points = [
+            PointStruct(
+                id=str(uuid.uuid5(uuid.NAMESPACE_DNS, c.chunk_id)),
+                vector=c.embedding,
+                payload={
+                    "chunk_id": c.chunk_id, "doc_id": c.doc_id, "doc_name": c.doc_name,
+                    "parent_id": c.parent_id, "content": c.content,
+                    "chunk_index": c.chunk_index, "metadata": c.metadata,
+                },
+            )
+            for c in chunks
+        ]
 
-        # 如果部分切片未计算向量，批量调用 Embedding 模型补齐
-        missing_embed_indices = [i for i, c in enumerate(chunks) if not c.embedding]
-        if missing_embed_indices:
-            texts_to_embed = [chunks[i].content for i in missing_embed_indices]
-            computed_vectors = await llm_provider.get_embeddings(texts_to_embed)
-            for idx, vec in zip(missing_embed_indices, computed_vectors):
-                chunks[idx].embedding = vec
-
-        # 构建 Qdrant 数据点 PointStruct
-        points = []
-        for c in chunks:
-            point_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, c.chunk_id))
-            payload = {
-                "chunk_id": c.chunk_id,
-                "doc_id": c.doc_id,
-                "doc_name": c.doc_name,
-                "parent_id": c.parent_id,
-                "content": c.content,
-                "chunk_index": c.chunk_index,
-                "metadata": c.metadata
-            }
-            points.append(PointStruct(id=point_id, vector=c.embedding, payload=payload))
-
-        self.client.upsert(collection_name=self.collection_name, points=points)
-        logger.info(f"[Qdrant] 成功写入/更新 {len(points)} 条切片向量")
+        def write():
+            self._ensure_collection(dim)
+            self.client.upsert(collection_name=self.collection_name, points=points)
+        await self._call(write)
         return len(points)
 
     async def search_by_vector(self, query_vector: List[float], top_k: int = None) -> List[SearchResultItem]:
+        if self.dimension is None:
+            return []
         limit = top_k or settings.rag.DENSE_TOP_K
 
-        # 调用 Qdrant 执行余弦检索 (兼容旧版 search 与新版 query_points)
-        if hasattr(self.client, "query_points"):
-            response = self.client.query_points(
-                collection_name=self.collection_name,
-                query=query_vector,
-                limit=limit,
-                with_payload=True
-            )
-            scored_points = response.points
-        else:
-            scored_points = self.client.search(
-                collection_name=self.collection_name,
-                query_vector=query_vector,
-                limit=limit
-            )
+        def query():
+            if hasattr(self.client, "query_points"):
+                return self.client.query_points(
+                    collection_name=self.collection_name, query=query_vector,
+                    limit=limit, with_payload=True).points
+            return self.client.search(collection_name=self.collection_name, query_vector=query_vector, limit=limit)
 
-        results: List[SearchResultItem] = []
-        for rank, p in enumerate(scored_points, start=1):
+        points = await self._call(query)
+        out = []
+        for rank, p in enumerate(points, start=1):
             pl = p.payload or {}
-            sim_score = round(float(p.score), 4)
-
-            item = SearchResultItem(
-                chunk_id=pl.get("chunk_id", ""),
-                doc_id=pl.get("doc_id", ""),
-                doc_name=pl.get("doc_name", ""),
-                parent_id=pl.get("parent_id"),
-                content=pl.get("content", ""),
-                score=sim_score,
-                source=RetrievalSource.DENSE_VECTOR,
-                rank=rank,
-                metadata={
-                    **pl.get("metadata", {}),
-                    "raw_cosine_score": sim_score
-                }
-            )
-            results.append(item)
-
-        return results
+            out.append(_to_item(rank, p.score, pl.get("chunk_id", ""), pl.get("doc_id", ""),
+                                pl.get("doc_name", ""), pl.get("parent_id"), pl.get("content", ""),
+                                pl.get("metadata", {})))
+        return out
 
     async def delete_by_doc_id(self, doc_id: str) -> bool:
-        from qdrant_client.models import Filter, FieldCondition, MatchValue
-        self.client.delete(
-            collection_name=self.collection_name,
-            points_selector=Filter(
-                must=[FieldCondition(key="doc_id", match=MatchValue(value=doc_id))]
+        if self.dimension is None:
+            return True
+
+        def delete():
+            self.client.delete(
+                collection_name=self.collection_name,
+                points_selector=Filter(must=[FieldCondition(key="doc_id", match=MatchValue(value=doc_id))]),
             )
-        )
+        await self._call(delete)
         return True
 
     async def clear(self):
-        self.client.delete_collection(self.collection_name)
-        self._ensure_collection()
+        def drop():
+            names = [c.name for c in self.client.get_collections().collections]
+            if self.collection_name in names:
+                self.client.delete_collection(self.collection_name)
+            self.dimension = None
+        await self._call(drop)
+
+    async def count(self) -> int:
+        if self.dimension is None:
+            return 0
+        return await self._call(lambda: self.client.count(collection_name=self.collection_name, exact=True).count)
 
 
 class InMemoryVectorStore(BaseVectorStore):
-    """零外部依赖的纯 Python / 余弦相似度向量库备用实现"""
+    """零外部依赖的纯内存向量存储（numpy 余弦相似度）"""
 
     def __init__(self):
-        self.chunks_data: Dict[str, Dict[str, Any]] = {}
+        self._data: Dict[str, Dict[str, Any]] = {}
+        self.dimension: Optional[int] = None
 
     async def add_chunks(self, chunks: List[ChildChunk]) -> int:
         if not chunks:
             return 0
-        missing = [i for i, c in enumerate(chunks) if not c.embedding]
-        if missing:
-            vecs = await llm_provider.get_embeddings([chunks[i].content for i in missing])
-            for i, v in zip(missing, vecs):
-                chunks[i].embedding = v
-
+        dim = len(chunks[0].embedding)
+        if self.dimension is not None and dim != self.dimension:
+            raise ValueError(f"向量维度不一致：已有 {self.dimension} 维，新向量 {dim} 维，需要重建索引。")
+        new_data = dict(self._data)  # 写时复制：检索线程持有旧引用时不受影响
         for c in chunks:
-            self.chunks_data[c.chunk_id] = {
-                "chunk": c,
-                "vector": c.embedding
-            }
+            new_data[c.chunk_id] = {"chunk": c, "vector": np.asarray(c.embedding, dtype=np.float32)}
+        self._data = new_data
+        self.dimension = dim
         return len(chunks)
 
     async def search_by_vector(self, query_vector: List[float], top_k: int = None) -> List[SearchResultItem]:
         limit = top_k or settings.rag.DENSE_TOP_K
-        if not self.chunks_data:
+        snapshot = list(self._data.values())
+        if not snapshot:
             return []
 
-        def cosine_sim(v1: List[float], v2: List[float]) -> float:
-            dot = sum(a * b for a, b in zip(v1, v2))
-            norm_a = sum(a * a for a, b in zip(v1, v2)) ** 0.5
-            norm_b = sum(b * b for a, b in zip(v1, v2)) ** 0.5
-            return dot / (norm_a * norm_b or 1.0)
+        def compute():
+            mat = np.stack([d["vector"] for d in snapshot])
+            q = np.asarray(query_vector, dtype=np.float32)
+            denom = (np.linalg.norm(mat, axis=1) * (np.linalg.norm(q) or 1.0))
+            denom[denom == 0] = 1.0
+            sims = mat @ q / denom
+            order = np.argsort(-sims)[:limit]
+            return [(float(sims[i]), snapshot[i]["chunk"]) for i in order]
 
-        scored_list = []
-        for cid, data in self.chunks_data.items():
-            sim = cosine_sim(query_vector, data["vector"])
-            scored_list.append((sim, data["chunk"]))
-
-        scored_list.sort(key=lambda x: x[0], reverse=True)
-
-        results = []
-        for rank, (score, chunk) in enumerate(scored_list[:limit], start=1):
-            results.append(SearchResultItem(
-                chunk_id=chunk.chunk_id,
-                doc_id=chunk.doc_id,
-                doc_name=chunk.doc_name,
-                parent_id=chunk.parent_id,
-                content=chunk.content,
-                score=round(float(score), 4),
-                source=RetrievalSource.DENSE_VECTOR,
-                rank=rank,
-                metadata={**chunk.metadata, "raw_cosine_score": round(float(score), 4)}
-            ))
-        return results
+        ranked = await asyncio.to_thread(compute)
+        return [
+            _to_item(rank, score, c.chunk_id, c.doc_id, c.doc_name, c.parent_id, c.content, c.metadata)
+            for rank, (score, c) in enumerate(ranked, start=1)
+        ]
 
     async def delete_by_doc_id(self, doc_id: str) -> bool:
-        to_del = [cid for cid, d in self.chunks_data.items() if d["chunk"].doc_id == doc_id]
-        for cid in to_del:
-            del self.chunks_data[cid]
+        self._data = {cid: d for cid, d in self._data.items() if d["chunk"].doc_id != doc_id}
         return True
 
     async def clear(self):
-        self.chunks_data.clear()
+        self._data = {}
+        self.dimension = None
+
+    async def count(self) -> int:
+        return len(self._data)
 
 
 class VectorStoreManager:
-    """向量库统一管理门面类"""
+    """向量库门面：负责调用 Embedding、写入、检索、删除"""
 
-    def __init__(self):
-        if QDRANT_AVAILABLE:
-            # 默认优先采用 Qdrant (如无外部集群服务则自动降级为 :memory: 模式)
-            self.store: BaseVectorStore = QdrantVectorStore()
+    def __init__(self, store: Optional[BaseVectorStore] = None, force_in_memory: bool = False,
+                 collection_name: Optional[str] = None):
+        if store is not None:
+            self.store = store
+        elif QDRANT_AVAILABLE:
+            # 优先 Qdrant（连不上独立服务时自动降级为嵌入式 :memory:）
+            self.store = QdrantVectorStore(collection_name=collection_name, force_in_memory=force_in_memory)
         else:
-            self.store: BaseVectorStore = InMemoryVectorStore()
+            self.store = InMemoryVectorStore()
 
     async def add_chunks(self, chunks: List[ChildChunk]) -> int:
+        """补齐缺失的向量后写入"""
+        missing = [i for i, c in enumerate(chunks) if not c.embedding]
+        if missing:
+            vectors = await llm_provider.get_embeddings([chunks[i].content for i in missing])
+            for i, v in zip(missing, vectors):
+                chunks[i].embedding = v
         return await self.store.add_chunks(chunks)
 
     async def search_by_text(self, query: str, top_k: int = None) -> List[SearchResultItem]:
-        """高级便捷方法：输入文本 -> 自动向量化 -> 执行余弦搜索"""
         query_vector = await llm_provider.get_embedding(query)
         return await self.store.search_by_vector(query_vector, top_k=top_k)
+
+    async def delete_document(self, doc_id: str) -> bool:
+        return await self.store.delete_by_doc_id(doc_id)
+
+    async def clear(self):
+        await self.store.clear()
+
+    async def count(self) -> int:
+        return await self.store.count()
 
 
 # 全局单例管理器

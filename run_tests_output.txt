@@ -1,0 +1,617 @@
+E:\project\.venv\Lib\site-packages\jieba\_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+[Qdrant] 无法连接 Qdrant 服务 (timed out)，降级为嵌入式内存模式 (:memory:)。如果本机确实运行着 Qdrant，请检查是否被系统代理拦截（设置 NO_PROXY=localhost,127.0.0.1）。
+test_empty_kb_short_circuits_without_rewrite (tests.test_agent_flow.TestEmptyKnowledgeBase.test_empty_kb_short_circuits_without_rewrite)
+AGENT-4 回归：知识库为空时原实现会改写重试两轮（离线时还把 Mock 文本当检索词） ... Building prefix dict from the default dictionary ...
+2026-10-23 14:04:52 [DEBUG] [jieba] Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\MECHREV0\AppData\Local\Temp\jieba.cache
+2026-10-23 14:04:52 [DEBUG] [jieba] Loading model from cache C:\Users\MECHREV0\AppData\Local\Temp\jieba.cache
+E:\project\.venv\Lib\site-packages\qdrant_client\qdrant_remote.py:290: UserWarning: Failed to obtain server version. Unable to check client-server compatibility. Set check_compatibility=False to skip version check.
+  show_warning(
+Loading model cost 0.636 seconds.
+2026-10-23 14:04:53 [DEBUG] [jieba] Loading model cost 0.636 seconds.
+Prefix dict has been built successfully.
+2026-10-23 14:04:53 [DEBUG] [jieba] Prefix dict has been built successfully.
+2026-10-23 14:04:53 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-0 候选集
+2026-10-23 14:04:53 [WARNING] [app.rag.hybrid_retriever] [HybridRetriever] 查询 '年假怎么申请？' 未召回任何候选片段。
+2026-10-23 14:04:53 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（知识库为空）
+ok
+test_audit_fail_then_regenerate_then_pass (tests.test_agent_flow.TestGates.test_audit_fail_then_regenerate_then_pass) ... 2026-10-23 14:04:53 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:53 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:53 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:53 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:53 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:53 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:53 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:53 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:53 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+ok
+test_audit_keeps_failing_is_flagged_not_hidden (tests.test_agent_flow.TestGates.test_audit_keeps_failing_is_flagged_not_hidden)
+重新生成次数用完后仍不通过：结束，但 audit_status=fail 会返回给用户（AGENT-6） ... 2026-10-23 14:04:53 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:53 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:53 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:53 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:53 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:53 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:53 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:54 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:54 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+ok
+test_external_fallback_uses_user_question_when_enabled (tests.test_agent_flow.TestGates.test_external_fallback_uses_user_question_when_enabled)
+AGENT-4：开启外部兜底时，发出去的是用户的问题，而不是 Mock 文本或改写词 ... 2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:54 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:54 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:54 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:54 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 0 条（按母块去重）
+2026-10-23 14:04:54 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（未检索到任何相关片段）
+2026-10-23 14:04:54 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:54 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 0 条（按母块去重）
+2026-10-23 14:04:54 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（未检索到任何相关片段）
+ok
+test_gates_see_full_context (tests.test_agent_flow.TestGates.test_gates_see_full_context)
+AGENT-2 回归：原来闸门只看前 800 / 1000 字，看不到排在后面的资料 ... 2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:54 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:54 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅报销.txt (ID: long_0)
+2026-10-23 14:04:54 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 8, 词项数: 84
+2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅报销.txt' 索引完成: 1 个母块, 6 个子块向量
+2026-10-23 14:04:54 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假申请.txt (ID: long_1)
+2026-10-23 14:04:55 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 14, 词项数: 84
+2026-10-23 14:04:55 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假申请.txt' 索引完成: 1 个母块, 6 个子块向量
+2026-10-23 14:04:55 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 加班调休.txt (ID: long_2)
+2026-10-23 14:04:55 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 20, 词项数: 86
+2026-10-23 14:04:55 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '加班调休.txt' 索引完成: 1 个母块, 6 个子块向量
+2026-10-23 14:04:55 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-20 候选集
+2026-10-23 14:04:57 [INFO] [app.rag.reranker] [Reranker] 输入 20 条候选，保留 2 条（按母块去重）
+2026-10-23 14:04:57 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+ok
+test_grade_call_failure_is_uncertain (tests.test_agent_flow.TestGates.test_grade_call_failure_is_uncertain) ... 2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:57 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:57 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:57 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:57 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:57 [WARNING] [app.agent.self_rag_graph] [Self-RAG] 检索评级调用失败: llm timeout
+2026-10-23 14:04:57 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: uncertain（评级调用失败（TimeoutError），未能完成检索评级）
+ok
+test_happy_path (tests.test_agent_flow.TestGates.test_happy_path) ... 2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:57 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:57 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:57 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:57 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:57 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+ok
+test_irrelevant_then_rewrite_then_relevant (tests.test_agent_flow.TestGates.test_irrelevant_then_rewrite_then_relevant) ... 2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:57 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:57 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:57 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:57 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:57 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:57 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（无关）
+2026-10-23 14:04:57 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:58 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:58 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（ok）
+ok
+test_markdown_wrapped_fail_is_not_treated_as_pass (tests.test_agent_flow.TestGates.test_markdown_wrapped_fail_is_not_treated_as_pass)
+AGENT-1 回归：原实现只认以 FAIL 开头，"**FAIL**" 会被当成通过 ... 2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:58 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:58 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:58 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:58 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:58 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+ok
+test_multi_turn_resolved_query_used_in_generation (tests.test_agent_flow.TestGates.test_multi_turn_resolved_query_used_in_generation)
+AGENT-7：第二轮问"它要多久内提交"时，生成阶段使用消解后的完整问题 ... 2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:58 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:58 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:58 [INFO] [app.agent.query_transform] [QueryTransformer] 指代消解: '它要多久内提交？' -> '差旅报销的发票需要在多久内提交？'
+2026-10-23 14:04:58 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:58 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:58 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+ok
+test_rewrites_exhausted_go_to_fallback_and_clear_citations (tests.test_agent_flow.TestGates.test_rewrites_exhausted_go_to_fallback_and_clear_citations)
+AGENT-5：兜底时清空过期引用；外部兜底默认关闭，不向第三方发送查询 ... 2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:58 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:58 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:58 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:58 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 0 条（按母块去重）
+2026-10-23 14:04:58 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（未检索到任何相关片段）
+2026-10-23 14:04:58 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:58 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:58 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（无关）
+2026-10-23 14:04:58 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:58 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:58 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（无关）
+ok
+test_separate_retry_budgets (tests.test_agent_flow.TestGates.test_separate_retry_budgets)
+AGENT-3 回归：检索改写用掉 2 次后，重新生成的机会不受影响 ... 2026-10-23 14:04:58 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:59 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:59 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:59 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:59 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:59 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: insufficient（缺）
+2026-10-23 14:04:59 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:59 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:59 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: insufficient（缺）
+2026-10-23 14:04:59 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:59 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:59 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（ok）
+ok
+test_unparsable_grade_is_uncertain_not_relevant (tests.test_agent_flow.TestGates.test_unparsable_grade_is_uncertain_not_relevant)
+AGENT-1 回归：原实现解析不出等级就默认 relevant ... 2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:59 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:59 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:59 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:59 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:59 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: uncertain（评级输出无法解析：我觉得还行吧）
+ok
+test_parse_variants (tests.test_agent_flow.TestJsonParsing.test_parse_variants) ... ok
+test_offline_skips_gates_honestly (tests.test_agent_flow.TestOfflineMode.test_offline_skips_gates_honestly)
+没有对话模型时：不做改写、不做评级/审计，但如实标注为 unverified ... 2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:59 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:59 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:59 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:59 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:59 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: unverified（离线模式：未配置对话模型，跳过检索评级）
+2026-10-23 14:04:59 [WARNING] [app.core.llm_provider] [LLMProvider] 未检测到有效 LLM_API_KEY，启用本地模拟输出。
+ok
+test_multi_query_and_hyde_reach_retriever (tests.test_agent_flow.TestQueryExpansionSwitches.test_multi_query_and_hyde_reach_retriever) ... 2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:59 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:04:59 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:59 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 6 路检索源，产生 Top-2 候选集
+2026-10-23 14:04:59 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:04:59 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+ok
+test_switches_off_by_default (tests.test_agent_flow.TestQueryExpansionSwitches.test_switches_off_by_default)
+不受本机 .env 影响：清掉相关环境变量后检查默认值 ... 2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:04:59 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:04:59 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:05:00 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+ok
+test_tokens_streamed_and_regenerate_event (tests.test_agent_flow.TestStreaming.test_tokens_streamed_and_regenerate_event)
+AGENT-8：生成节点边收 token 边推送；审计不通过时推送 regenerate 事件 ... 2026-10-23 14:05:00 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: d_a)
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 22
+2026-10-23 14:05:00 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:00 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: d_b)
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 38
+2026-10-23 14:05:00 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:00 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:05:00 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:05:00 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+ok
+test_admin_endpoints_require_token (tests.test_api_endpoints.TestAPIEndpoints.test_admin_endpoints_require_token) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/settings/test "HTTP/1.1 401 Unauthorized"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/settings "HTTP/1.1 401 Unauthorized"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/evaluation/run "HTTP/1.1 401 Unauthorized"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: DELETE http://testserver/api/v1/rag/documents/whatever "HTTP/1.1 401 Unauthorized"
+ok
+test_background_upload_and_task_polling (tests.test_api_endpoints.TestAPIEndpoints.test_background_upload_and_task_polling)
+CONC-2：后台入库立即返回 202 + 任务 ID，轮询到 done。 ... 2026-10-23 14:05:00 [INFO] [app.main] ============================================================
+2026-10-23 14:05:00 [INFO] [app.main] 正在启动 Enterprise-Agentic-RAG 服务...
+2026-10-23 14:05:00 [INFO] [app.main] ============================================================
+2026-10-23 14:05:00 [INFO] [app.main] [Startup] 上传目录已就绪: E:\project\我的项目\agent项目\02-AI_Agentic_RAG高级企业知识库平台\data\uploads
+2026-10-23 14:05:00 [INFO] [app.main] [Startup] 评测归档目录已就绪: C:\Users\MECHREV0\AppData\Local\Temp\tmpgtm40xog\eval
+2026-10-23 14:05:00 [INFO] [app.main] [Startup] 向量库配置模式: qdrant
+2026-10-23 14:05:00 [INFO] [app.main] [Startup] 基础对话模型: deepseek-chat
+2026-10-23 14:05:00 [INFO] [app.main] [Startup] 密集向量模型: text-embedding-v4
+2026-10-23 14:05:00 [INFO] [app.main] [Startup] 交叉重排模型: gte-rerank-v2
+2026-10-23 14:05:00 [INFO] [app.rag.knowledge_base] [KnowledgeBase] 启动重建完成：成功 0 篇，失败 0 篇
+2026-10-23 14:05:00 [INFO] [app.main] [Startup] 知识库重建完成: {'indexed': 0, 'failed': 0}
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/documents/upload?background=true "HTTP/1.1 202 Accepted"
+2026-10-23 14:05:00 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 会议室.txt (ID: bg_doc)
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: GET http://testserver/api/v1/rag/documents/tasks/9f1e3ee28539 "HTTP/1.1 200 OK"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: GET http://testserver/api/v1/rag/documents/tasks/9f1e3ee28539 "HTTP/1.1 200 OK"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: GET http://testserver/api/v1/rag/documents/tasks/9f1e3ee28539 "HTTP/1.1 200 OK"
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 12
+2026-10-23 14:05:00 [INFO] [app.rag.vector_store] [Qdrant] 创建集合 enterprise_kb，维度 1024
+2026-10-23 14:05:00 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '会议室.txt' 索引完成: 1 个母块, 2 个子块向量
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: GET http://testserver/api/v1/rag/documents/tasks/9f1e3ee28539 "HTTP/1.1 200 OK"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: GET http://testserver/api/v1/rag/documents/tasks/nope "HTTP/1.1 404 Not Found"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/documents/upload?background=true "HTTP/1.1 400 Bad Request"
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 0, 词项数: 0
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: DELETE http://testserver/api/v1/rag/documents/bg_doc "HTTP/1.1 200 OK"
+2026-10-23 14:05:00 [INFO] [app.main] ============================================================
+2026-10-23 14:05:00 [INFO] [app.main] Enterprise-Agentic-RAG 服务正在优雅停机 (运行总时长: 0.21s)...
+2026-10-23 14:05:00 [INFO] [app.main] ============================================================
+ok
+test_chat_query_endpoint (tests.test_api_endpoints.TestAPIEndpoints.test_chat_query_endpoint) ... 2026-10-23 14:05:00 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-0 候选集
+2026-10-23 14:05:00 [WARNING] [app.rag.hybrid_retriever] [HybridRetriever] 查询 '你好，请简要介绍平台' 未召回任何候选片段。
+2026-10-23 14:05:00 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（知识库为空）
+2026-10-23 14:05:00 [WARNING] [app.core.llm_provider] [LLMProvider] 未检测到有效 LLM_API_KEY，启用本地模拟输出。
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/chat/query "HTTP/1.1 200 OK"
+ok
+test_chat_query_too_long_rejected (tests.test_api_endpoints.TestAPIEndpoints.test_chat_query_too_long_rejected) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/chat/query "HTTP/1.1 422 Unprocessable Entity"
+ok
+test_chat_stream_ends_with_done (tests.test_api_endpoints.TestAPIEndpoints.test_chat_stream_ends_with_done) ... 2026-10-23 14:05:00 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-0 候选集
+2026-10-23 14:05:00 [WARNING] [app.rag.hybrid_retriever] [HybridRetriever] 查询 '测试流式' 未召回任何候选片段。
+2026-10-23 14:05:00 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（知识库为空）
+2026-10-23 14:05:00 [WARNING] [app.core.llm_provider] [LLMProvider] 未检测到有效 LLM_API_KEY，启用流式模拟输出。
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/chat/stream "HTTP/1.1 200 OK"
+ok
+test_cors_only_allows_whitelisted_origins (tests.test_api_endpoints.TestAPIEndpoints.test_cors_only_allows_whitelisted_origins) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: OPTIONS http://testserver/api/v1/rag/settings "HTTP/1.1 400 Bad Request"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: OPTIONS http://testserver/api/v1/rag/settings "HTTP/1.1 200 OK"
+ok
+test_evaluation_report_name_traversal_rejected (tests.test_api_endpoints.TestAPIEndpoints.test_evaluation_report_name_traversal_rejected) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/evaluation/run "HTTP/1.1 400 Bad Request"
+ok
+test_get_settings_masked (tests.test_api_endpoints.TestAPIEndpoints.test_get_settings_masked) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: GET http://testserver/api/v1/rag/settings "HTTP/1.1 200 OK"
+ok
+test_health_check (tests.test_api_endpoints.TestAPIEndpoints.test_health_check) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: GET http://testserver/health "HTTP/1.1 200 OK"
+ok
+test_rag_status_endpoint (tests.test_api_endpoints.TestAPIEndpoints.test_rag_status_endpoint) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: GET http://testserver/api/v1/rag/status "HTTP/1.1 200 OK"
+ok
+test_settings_rejects_unsafe_values (tests.test_api_endpoints.TestAPIEndpoints.test_settings_rejects_unsafe_values) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/settings "HTTP/1.1 400 Bad Request"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/settings "HTTP/1.1 400 Bad Request"
+ok
+test_settings_test_connectivity_with_token (tests.test_api_endpoints.TestAPIEndpoints.test_settings_test_connectivity_with_token) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/settings/test "HTTP/1.1 200 OK"
+ok
+test_upload_list_duplicate_delete_cycle (tests.test_api_endpoints.TestAPIEndpoints.test_upload_list_duplicate_delete_cycle) ... 2026-10-23 14:05:00 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 差旅.txt (ID: api_doc)
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 9
+2026-10-23 14:05:00 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '差旅.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/documents/upload "HTTP/1.1 200 OK"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: GET http://testserver/api/v1/rag/documents "HTTP/1.1 200 OK"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/documents/upload "HTTP/1.1 409 Conflict"
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 0, 词项数: 0
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: DELETE http://testserver/api/v1/rag/documents/api_doc "HTTP/1.1 200 OK"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: DELETE http://testserver/api/v1/rag/documents/api_doc "HTTP/1.1 404 Not Found"
+ok
+test_upload_rejects_unsafe_input (tests.test_api_endpoints.TestAPIEndpoints.test_upload_rejects_unsafe_input) ... 2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/documents/upload "HTTP/1.1 400 Bad Request"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/documents/upload "HTTP/1.1 400 Bad Request"
+2026-10-23 14:05:00 [INFO] [httpx] HTTP Request: POST http://testserver/api/v1/rag/documents/upload "HTTP/1.1 413 Request Entity Too Large"
+ok
+test_search_during_writes_never_crashes (tests.test_concurrency_api.TestBM25Concurrency.test_search_during_writes_never_crashes)
+CONC-1 回归：原实现边写边搜时，300 次检索中出现 19 次 ... 2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1000, 词项数: 1099
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1100, 词项数: 1199
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1099, 词项数: 1198
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1199, 词项数: 1298
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1198, 词项数: 1297
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1298, 词项数: 1397
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1297, 词项数: 1396
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1397, 词项数: 1496
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1396, 词项数: 1495
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1496, 词项数: 1595
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1495, 词项数: 1594
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1595, 词项数: 1694
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1594, 词项数: 1693
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1694, 词项数: 1793
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1693, 词项数: 1792
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1793, 词项数: 1892
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1792, 词项数: 1891
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1892, 词项数: 1991
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1891, 词项数: 1990
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1991, 词项数: 2090
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1990, 词项数: 2089
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2090, 词项数: 2189
+2026-10-23 14:05:00 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2089, 词项数: 2188
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2189, 词项数: 2288
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2188, 词项数: 2287
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2288, 词项数: 2387
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2287, 词项数: 2386
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2387, 词项数: 2486
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2386, 词项数: 2485
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2486, 词项数: 2585
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2485, 词项数: 2584
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2585, 词项数: 2684
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2584, 词项数: 2683
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2684, 词项数: 2783
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2683, 词项数: 2782
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2783, 词项数: 2882
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2782, 词项数: 2881
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2882, 词项数: 2981
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2881, 词项数: 2980
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2981, 词项数: 3080
+2026-10-23 14:05:01 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2980, 词项数: 3079
+ok
+test_batches_respect_provider_limit_and_keep_order (tests.test_concurrency_api.TestEmbeddingBatching.test_batches_respect_provider_limit_and_keep_order)
+API-1 回归：原实现一次发送全部子块，超过 10 条必然失败 ... ok
+test_rerank_failure_falls_back_to_rrf_order (tests.test_concurrency_api.TestRerankFallback.test_rerank_failure_falls_back_to_rrf_order)
+API-3：重排服务出错时退回 RRF 排序，而不是让整个问答 500 ... 2026-10-23 14:05:01 [WARNING] [app.rag.reranker] [Reranker] 重排服务调用失败，退回 RRF 排序: rerank timeout
+2026-10-23 14:05:01 [INFO] [app.rag.reranker] [Reranker] 输入 4 条候选，保留 3 条（按母块去重，重排失败已回退 RRF）
+ok
+test_dimension_mismatch_is_reported (tests.test_concurrency_api.TestVectorStore.test_dimension_mismatch_is_reported) ... ok
+test_module_imports_without_qdrant (tests.test_concurrency_api.TestVectorStore.test_module_imports_without_qdrant)
+RET-2 回归：没装 qdrant-client 时，原实现导入阶段就 NameError。 ... ok
+test_incremental_avgdl_equals_full_rebuild (tests.test_data_consistency.TestBM25Correctness.test_incremental_avgdl_equals_full_rebuild)
+DATA-3 回归：原实现第二批写入后 avgdl=16.67，真值 18.33 ... 2026-10-23 14:05:02 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 3
+2026-10-23 14:05:02 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 3, 词项数: 4
+2026-10-23 14:05:02 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 3, 词项数: 4
+ok
+test_remove_document (tests.test_data_consistency.TestBM25Correctness.test_remove_document) ... 2026-10-23 14:05:02 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 2
+2026-10-23 14:05:02 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 2
+ok
+test_replacing_chunk_removes_old_postings (tests.test_data_consistency.TestBM25Correctness.test_replacing_chunk_removes_old_postings) ... 2026-10-23 14:05:02 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 2
+2026-10-23 14:05:02 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 1
+ok
+test_duplicate_content_rejected (tests.test_data_consistency.TestKnowledgeBase.test_duplicate_content_rejected) ... 2026-10-23 14:05:02 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: doc_a)
+2026-10-23 14:05:02 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 3
+2026-10-23 14:05:02 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 1 个子块向量
+ok
+test_embedding_model_change_triggers_rebuild (tests.test_data_consistency.TestKnowledgeBase.test_embedding_model_change_triggers_rebuild)
+API-2：向量模型变化后必须重建，否则新旧向量混在一个索引里 ... 2026-10-23 14:05:02 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+2026-10-23 14:05:02 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 1
+2026-10-23 14:05:02 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:02 [WARNING] [app.rag.knowledge_base] [KnowledgeBase] 向量模型已变化 (offline-hash-v2:1024 -> api:x:new-model)，重建全部索引
+2026-10-23 14:05:02 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 1
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.knowledge_base] [KnowledgeBase] 启动重建完成：成功 1 篇，失败 0 篇
+ok
+test_legacy_files_are_registered (tests.test_data_consistency.TestKnowledgeBase.test_legacy_files_are_registered) ... 2026-10-23 14:05:03 [INFO] [app.rag.knowledge_base] [KnowledgeBase] 补登记历史文件 doc_old_01_旧文档.txt -> doc_id=doc_old_01____
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: doc_old_01_旧文档.txt (ID: doc_old_01____)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 3
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'doc_old_01_旧文档.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.knowledge_base] [KnowledgeBase] 启动重建完成：成功 1 篇，失败 0 篇
+ok
+test_rejects_unsafe_input (tests.test_data_consistency.TestKnowledgeBase.test_rejects_unsafe_input)
+SEC-2 回归：doc_id 路径穿越、不支持的类型、超大文件 ... 2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 报告.md (ID: doc_ok)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 2
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '报告.md' 索引完成: 1 个母块, 1 个子块向量
+ok
+test_restart_rebuild_keeps_doc_ids_and_pdf (tests.test_data_consistency.TestKnowledgeBase.test_restart_rebuild_keeps_doc_ids_and_pdf)
+DATA-2 / DATA-6 回归：重启后 PDF 仍可检索，doc_id 不变 ... 2026-10-23 14:05:03 [WARNING] [asyncio] Executing <Task pending name='Task-628' coro=<TestKnowledgeBase.test_restart_rebuild_keeps_doc_ids_and_pdf() running at E:\project\我的项目\agent项目\02-AI_Agentic_RAG高级企业知识库平台\tests\test_data_consistency.py:194> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at C:\Users\MECHREV0\AppData\Local\Programs\Python\Python313\Lib\asyncio\futures.py:384, Task.task_wakeup()] created at C:\Users\MECHREV0\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py:459> cb=[_run_until_complete_cb() at C:\Users\MECHREV0\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py:181] created at C:\Users\MECHREV0\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py:100> took 0.136 seconds
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: policy.pdf (ID: pdf_policy)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 12
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'policy.pdf' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: leave.txt (ID: txt_leave)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 21
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'leave.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: policy.pdf (ID: pdf_policy)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 12
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'policy.pdf' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: leave.txt (ID: txt_leave)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 21
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'leave.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.knowledge_base] [KnowledgeBase] 启动重建完成：成功 2 篇，失败 0 篇
+2026-10-23 14:05:03 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+ok
+test_upload_replace_delete_cycle (tests.test_data_consistency.TestKnowledgeBase.test_upload_replace_delete_cycle) ... 2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 报销.txt (ID: policy)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 5
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '报销.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 报销.txt (ID: policy)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 0, 词项数: 0
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 6
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '报销.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 0, 词项数: 0
+ok
+test_delete_removes_from_all_stores (tests.test_data_consistency.TestRetrieverConsistency.test_delete_removes_from_all_stores) ... 2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 5
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: b.txt (ID: d2)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 9
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'b.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 6
+2026-10-23 14:05:03 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-1 候选集
+ok
+test_failed_embedding_keeps_old_version (tests.test_data_consistency.TestRetrieverConsistency.test_failed_embedding_keeps_old_version)
+新版本准备失败时（如 Embedding 接口报错），旧版本必须完整保留 ... 2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+2026-10-23 14:05:03 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 6
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+ok
+test_reindex_same_doc_id_does_not_duplicate (tests.test_data_consistency.TestRetrieverConsistency.test_reindex_same_doc_id_does_not_duplicate)
+DATA-1 回归：原实现同一 doc_id 索引两次后块数翻倍 ... 2026-10-23 14:05:03 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+2026-10-23 14:05:04 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 9
+2026-10-23 14:05:04 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 2 个子块向量
+2026-10-23 14:05:04 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+2026-10-23 14:05:04 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 0, 词项数: 0
+2026-10-23 14:05:04 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 9
+2026-10-23 14:05:04 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 2 个子块向量
+ok
+test_results_deduplicated_by_parent_and_context_budget (tests.test_data_consistency.TestRetrieverConsistency.test_results_deduplicated_by_parent_and_context_budget)
+DATA-4 回归：原实现 5 个结果全来自同一母块，同一段文字在上下文里重复 5 次 ... 2026-10-23 14:05:04 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 报销制度.txt (ID: fin)
+2026-10-23 14:05:04 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 5, 词项数: 54
+2026-10-23 14:05:04 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '报销制度.txt' 索引完成: 1 个母块, 5 个子块向量
+2026-10-23 14:05:04 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-5 候选集
+2026-10-23 14:05:05 [INFO] [app.rag.reranker] [Reranker] 输入 5 条候选，保留 1 条（按母块去重）
+ok
+test_zero_overlap_is_honored (tests.test_data_consistency.TestSplitter.test_zero_overlap_is_honored)
+DATA-5 回归：原来 `0 or 150` 得到 150 ... ok
+test_bundled_dataset_evidence_exists_in_sources (tests.test_eval_pipeline.TestDatasetIntegrity.test_bundled_dataset_evidence_exists_in_sources) ... ok
+test_judges_feed_code_computed_metrics (tests.test_eval_pipeline.TestEndToEnd.test_judges_feed_code_computed_metrics) ... 2026-10-23 14:05:14 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: a)
+2026-10-23 14:05:14 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 16
+2026-10-23 14:05:14 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:14 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: b.txt (ID: b)
+2026-10-23 14:05:14 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 25
+2026-10-23 14:05:14 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'b.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:14 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:05:14 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:05:14 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+2026-10-23 14:05:14 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:05:14 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:05:14 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+2026-10-23 14:05:14 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:05:14 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 0 条（按母块去重）
+2026-10-23 14:05:14 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: irrelevant（未检索到任何相关片段）
+2026-10-23 14:05:14 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:05:14 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 1 条（按母块去重）
+2026-10-23 14:05:14 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: relevant（资料覆盖问题）
+ok
+test_skipped_without_llm (tests.test_eval_pipeline.TestEndToEnd.test_skipped_without_llm) ... ok
+test_paired_bootstrap (tests.test_eval_pipeline.TestMetrics.test_paired_bootstrap) ... ok
+test_rank_summary (tests.test_eval_pipeline.TestMetrics.test_rank_summary) ... ok
+test_relevance_ignores_whitespace_and_case (tests.test_eval_pipeline.TestMetrics.test_relevance_ignores_whitespace_and_case) ... ok
+test_threshold_analysis (tests.test_eval_pipeline.TestMetrics.test_threshold_analysis) ... ok
+test_runs_and_bm25_only_skips_dense (tests.test_eval_pipeline.TestRetrievalEvaluation.test_runs_and_bm25_only_skips_dense) ... 2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: a)
+2026-10-23 14:05:15 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 16
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: b.txt (ID: b)
+2026-10-23 14:05:15 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 25
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'b.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 1 路检索源，产生 Top-1 候选集
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 1 路检索源，产生 Top-1 候选集
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 1 路检索源，产生 Top-0 候选集
+2026-10-23 14:05:15 [WARNING] [app.rag.hybrid_retriever] [HybridRetriever] 查询 '股票期权怎么行权' 未召回任何候选片段。
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 1 路检索源，产生 Top-1 候选集
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 1 路检索源，产生 Top-1 候选集
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 1 路检索源，产生 Top-0 候选集
+2026-10-23 14:05:15 [WARNING] [app.rag.hybrid_retriever] [HybridRetriever] 查询 '股票期权怎么行权' 未召回任何候选片段。
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:05:15 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 2 条（按母块去重）
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:05:15 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 2 条（按母块去重）
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-2 候选集
+2026-10-23 14:05:15 [INFO] [app.rag.reranker] [Reranker] 输入 2 条候选，保留 2 条（按母块去重）
+ok
+test_failure_is_reported (tests.test_group7_cache_ingest.TestBackgroundIngest.test_failure_is_reported) ... 2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: a)
+2026-10-23 14:05:15 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 2
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:15 [ERROR] [app.rag.ingest_tasks] [IngestTask] b.txt 入库失败: 相同内容的文档已存在: a
+Traceback (most recent call last):
+  File "E:\project\我的项目\agent项目\02-AI_Agentic_RAG高级企业知识库平台\app\rag\ingest_tasks.py", line 48, in runner
+    info["result"] = await job(progress)
+                     ^^^^^^^^^^^^^^^^^^^
+  File "E:\project\我的项目\agent项目\02-AI_Agentic_RAG高级企业知识库平台\app\rag\knowledge_base.py", line 113, in add_document
+    raise DuplicateContentError(other_id)
+app.rag.knowledge_base.DuplicateContentError: 相同内容的文档已存在: a
+ok
+test_task_reports_progress_and_result (tests.test_group7_cache_ingest.TestBackgroundIngest.test_task_reports_progress_and_result) ... 2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: 年假.txt (ID: leave)
+2026-10-23 14:05:15 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 4, 词项数: 10
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 '年假.txt' 索引完成: 1 个母块, 4 个子块向量
+ok
+test_restart_rebuild_does_not_call_api_again (tests.test_group7_cache_ingest.TestEmbeddingCache.test_restart_rebuild_does_not_call_api_again)
+DATA-7：重启后按清单重建索引，向量全部来自缓存 ... 2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+2026-10-23 14:05:15 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 3, 词项数: 6
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 3 个子块向量
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+2026-10-23 14:05:15 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 3, 词项数: 6
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 3 个子块向量
+2026-10-23 14:05:15 [INFO] [app.rag.knowledge_base] [KnowledgeBase] 启动重建完成：成功 1 篇，失败 0 篇
+ok
+test_roundtrip_and_signature_isolation (tests.test_group7_cache_ingest.TestEmbeddingCache.test_roundtrip_and_signature_isolation) ... ok
+test_second_call_hits_cache (tests.test_group7_cache_ingest.TestEmbeddingCache.test_second_call_hits_cache) ... ok
+test_citation_metadata_includes_page (tests.test_group7_cache_ingest.TestPagesAndCsv.test_citation_metadata_includes_page) ... ok
+test_csv_rows_carry_header (tests.test_group7_cache_ingest.TestPagesAndCsv.test_csv_rows_carry_header) ... ok
+test_pdf_children_carry_page_numbers (tests.test_group7_cache_ingest.TestPagesAndCsv.test_pdf_children_carry_page_numbers)
+ENG-7：引用可以显示"第 n 页" ... ok
+test_plain_text_has_no_page (tests.test_group7_cache_ingest.TestPagesAndCsv.test_plain_text_has_no_page) ... ok
+test_bm25_indexing_and_search (tests.test_hybrid_retrieval.TestHybridRetrieval.test_bm25_indexing_and_search)
+测试 Okapi BM25 稀疏检索倒排索引构建与查询 ... 2026-10-23 14:05:15 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 2, 词项数: 30
+ok
+test_end_to_end_hybrid_index_and_retrieve (tests.test_hybrid_retrieval.TestHybridRetrieval.test_end_to_end_hybrid_index_and_retrieve)
+测试端到端摄取文档、构建混合索引并检索回填母块上下文 ... 2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: tqsdk_architecture.txt (ID: test_suite_doc)
+2026-10-23 14:05:15 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 53
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'tqsdk_architecture.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-1 候选集
+2026-10-23 14:05:15 [INFO] [app.rag.reranker] [Reranker] 输入 1 条候选，保留 1 条（按母块去重）
+ok
+test_rrf_fusion_ranking (tests.test_hybrid_retrieval.TestHybridRetrieval.test_rrf_fusion_ranking)
+测试 RRF (Reciprocal Rank Fusion) 倒数名次融合加权算法 ... 2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-3 候选集
+ok
+test_embedding_error_falls_back_to_bm25 (tests.test_key_resolution.TestDenseFailureDegrades.test_embedding_error_falls_back_to_bm25) ... 2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: a.txt (ID: d1)
+2026-10-23 14:05:15 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 5
+2026-10-23 14:05:15 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'a.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:15 [ERROR] [app.rag.hybrid_retriever] [HybridRetriever] 向量检索失败，本次只使用 BM25 结果: 401 invalid api key
+2026-10-23 14:05:15 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-1 候选集
+ok
+test_different_provider_does_not_inherit (tests.test_key_resolution.TestKeyResolution.test_different_provider_does_not_inherit)
+对话用 DeepSeek、向量/重排用百炼：不能把 DeepSeek 的 Key 发给百炼 ... 2026-10-23 14:05:16 [INFO] [app.core.llm_provider] [LLMProvider] 配置已重载: LLM=True (deepseek-chat), Embedding=False (text-embedding-v4), Reranker=False (gte-rerank-v2)
+2026-10-23 14:05:16 [INFO] [app.core.llm_provider] [LLMProvider] 配置已重载: LLM=False (deepseek-chat), Embedding=False (text-embedding-v4), Reranker=False (gte-rerank-v2)
+ok
+test_own_key_wins_and_placeholder_ignored (tests.test_key_resolution.TestKeyResolution.test_own_key_wins_and_placeholder_ignored) ... 2026-10-23 14:05:17 [INFO] [app.core.llm_provider] [LLMProvider] 配置已重载: LLM=True (deepseek-chat), Embedding=True (text-embedding-v4), Reranker=False (gte-rerank-v2)
+2026-10-23 14:05:17 [INFO] [app.core.llm_provider] [LLMProvider] 配置已重载: LLM=False (deepseek-chat), Embedding=False (text-embedding-v4), Reranker=False (gte-rerank-v2)
+ok
+test_runtime_update_propagates (tests.test_key_resolution.TestKeyResolution.test_runtime_update_propagates)
+运行中更新对话模型 Key 后，同服务商的向量模型立即可用（原实现要重启才生效） ... 2026-10-23 14:05:17 [INFO] [app.core.llm_provider] [LLMProvider] 配置已重载: LLM=False (deepseek-chat), Embedding=False (text-embedding-v4), Reranker=False (gte-rerank-v2)
+2026-10-23 14:05:19 [INFO] [app.core.llm_provider] [LLMProvider] 配置已重载: LLM=True (deepseek-chat), Embedding=True (text-embedding-v4), Reranker=True (gte-rerank-v2)
+2026-10-23 14:05:19 [INFO] [app.core.llm_provider] [LLMProvider] 配置已重载: LLM=False (deepseek-chat), Embedding=False (text-embedding-v4), Reranker=False (gte-rerank-v2)
+ok
+test_same_provider_inherits (tests.test_key_resolution.TestKeyResolution.test_same_provider_inherits) ... 2026-10-23 14:05:20 [INFO] [app.core.llm_provider] [LLMProvider] 配置已重载: LLM=True (deepseek-chat), Embedding=True (text-embedding-v4), Reranker=True (gte-rerank-v2)
+2026-10-23 14:05:20 [INFO] [app.core.llm_provider] [LLMProvider] 配置已重载: LLM=False (deepseek-chat), Embedding=False (text-embedding-v4), Reranker=False (gte-rerank-v2)
+ok
+test_connectivity_probe_structure (tests.test_llm_and_offline.TestLLMAndOffline.test_connectivity_probe_structure)
+测试网关连通性探测接口返回数据结构规范 ... ok
+test_hash_seed_has_no_prefix_collisions (tests.test_llm_and_offline.TestLLMAndOffline.test_hash_seed_has_no_prefix_collisions)
+RET-1 回归：原种子只取 token 的前 4 个字节，前缀相同的词得到完全相同的向量 ... ok
+test_offline_reranker_cross_scoring (tests.test_llm_and_offline.TestLLMAndOffline.test_offline_reranker_cross_scoring)
+测试离线重排多信号加权打分 (Jaccard + 实体重合 + 语义投影) ... ok
+test_offline_signature_versioned (tests.test_llm_and_offline.TestLLMAndOffline.test_offline_signature_versioned)
+哈希函数变了，离线向量签名必须变化，才能触发已有索引重建 ... ok
+test_subword_embedding_geometry (tests.test_llm_and_offline.TestLLMAndOffline.test_subword_embedding_geometry)
+离线 1024 维哈希特征向量：维度、单位范数、确定性，以及词面重叠越多越相近 ... ok
+test_evaluate_sample_grounded_dynamic (tests.test_ragas_evaluator.TestRagasEvaluator.test_evaluate_sample_grounded_dynamic)
+测试 evaluate_sample 端到端生成真实四维指标与审计底稿 ... ok
+test_math_context_precision_map (tests.test_ragas_evaluator.TestRagasEvaluator.test_math_context_precision_map)
+测试 MAP 上下文精准度加权平均计算 ... ok
+test_math_context_recall_exact_and_partial (tests.test_ragas_evaluator.TestRagasEvaluator.test_math_context_recall_exact_and_partial)
+测试上下文召回率的真实数学覆盖计算，严禁假静态常数 ... ok
+test_base_url_validation (tests.test_security.TestAdminAccess.test_base_url_validation) ... ok
+test_with_token (tests.test_security.TestAdminAccess.test_with_token) ... ok
+test_without_token_only_local_and_trusted_origin (tests.test_security.TestAdminAccess.test_without_token_only_local_and_trusted_origin) ... ok
+test_debug_off_by_default (tests.test_security.TestEnvWrite.test_debug_off_by_default) ... ok
+test_rejects_newline_injection_and_unknown_keys (tests.test_security.TestEnvWrite.test_rejects_newline_injection_and_unknown_keys) ... ok
+test_doc_id_whitelist (tests.test_security.TestPathSafety.test_doc_id_whitelist) ... ok
+test_evaluator_cannot_write_outside_eval_dir (tests.test_security.TestPathSafety.test_evaluator_cannot_write_outside_eval_dir)
+SEC-1 回归：原实现传入 ../../main.py 会覆盖 main.py ... 2026-10-23 14:05:20 [INFO] [app.eval.ragas_evaluator] [RagasEvaluator] 开始对 1 条问答数据执行量化基准评测...
+2026-10-23 14:05:20 [INFO] [app.eval.ragas_evaluator] [RagasEvaluator] 批量基准评测完成！报告已保存至: C:\Users\MECHREV0\AppData\Local\Temp\tmpmynklrpz\eval\ok_report.json
+ok
+test_report_name_whitelist (tests.test_security.TestPathSafety.test_report_name_whitelist) ... ok
+test_safe_join_rejects_escape (tests.test_security.TestPathSafety.test_safe_join_rejects_escape) ... ok
+test_sanitize_filename_strips_directories (tests.test_security.TestPathSafety.test_sanitize_filename_strips_directories) ... ok
+test_citation_metadata_whitelist (tests.test_security.TestPromptAndMetadata.test_citation_metadata_whitelist) ... ok
+test_doc_tags_in_content_are_neutralized (tests.test_security.TestPromptAndMetadata.test_doc_tags_in_content_are_neutralized) ... ok
+test_sliding_window (tests.test_security.TestRateLimiter.test_sliding_window) ... ok
+test_query_and_history_limits (tests.test_security.TestRequestLimits.test_query_and_history_limits) ... ok
+test_initial_state_structure (tests.test_self_rag_graph.TestSelfRAGGraph.test_initial_state_structure)
+测试 Self-RAG 初始状态模型构造规范 ... 2026-10-23 14:05:20 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: tq_features.txt (ID: test_self_rag_doc)
+2026-10-23 14:05:20 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 19
+2026-10-23 14:05:20 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'tq_features.txt' 索引完成: 1 个母块, 1 个子块向量
+ok
+test_self_rag_pipeline_execution (tests.test_self_rag_graph.TestSelfRAGGraph.test_self_rag_pipeline_execution)
+测试 Self-RAG 端到端状态机运行与生成回复 ... 2026-10-23 14:05:20 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 开始处理文档: tq_features.txt (ID: test_self_rag_doc)
+2026-10-23 14:05:20 [INFO] [app.rag.bm25_index] [BM25Index] 索引已重建，切片数: 1, 词项数: 19
+2026-10-23 14:05:20 [INFO] [app.rag.hybrid_retriever] [HybridRetriever] 文档 'tq_features.txt' 索引完成: 1 个母块, 1 个子块向量
+2026-10-23 14:05:20 [INFO] [app.rag.rrf_fusion] [RRFFusion] 成功融合 2 路检索源，产生 Top-1 候选集
+2026-10-23 14:05:20 [INFO] [app.rag.reranker] [Reranker] 输入 1 条候选，保留 1 条（按母块去重）
+2026-10-23 14:05:20 [INFO] [app.agent.self_rag_graph] [Self-RAG] 检索评级: unverified（离线模式：未配置对话模型，跳过检索评级）
+2026-10-23 14:05:20 [WARNING] [app.core.llm_provider] [LLMProvider] 未检测到有效 LLM_API_KEY，启用本地模拟输出。
+ok
+test_parent_child_splitter (tests.test_splitter.TestSplitter.test_parent_child_splitter) ... ok
+test_recursive_splitter_basic (tests.test_splitter.TestSplitter.test_recursive_splitter_basic) ... ok
+test_splitter_invalid_overlap (tests.test_splitter.TestSplitter.test_splitter_invalid_overlap) ... ok
+
+----------------------------------------------------------------------
+Ran 103 tests in 28.116s
+
+OK
+======================================================================
+  Enterprise Agentic RAG Platform - Automated Verification Suite
+======================================================================
+
+======================================================================
+[TEST SUMMARY] 执行总用例: 103 个 | 耗时: 28.12s
+[STATUS: PASSED] 全部通过：0 错误, 0 失败, 0 跳过。
+======================================================================

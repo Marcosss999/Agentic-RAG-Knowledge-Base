@@ -1,0 +1,52 @@
+{
+  "total_samples": 2,
+  "evaluation_engine": "Hybrid LLM-as-a-Judge & Grounded Mathematical Metric Suite",
+  "average_metrics": {
+    "faithfulness": 1.0,
+    "answer_relevancy": 0.6083,
+    "context_precision": 1.0,
+    "context_recall": 0.8572,
+    "overall_score": 0.8735
+  },
+  "timestamp": "2026-10-21 09:49:58",
+  "details": [
+    {
+      "sample_id": 1,
+      "query": "系统的父子分块切分大小分别是多少？",
+      "ground_truth": "母块1500字，子块300字。",
+      "metrics": {
+        "context_recall": 1.0,
+        "context_precision": 1.0,
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.35,
+        "overall_score": 0.8375,
+        "evaluated_at": 1792547398.975646
+      },
+      "audit_reasons": {
+        "faithfulness_reason": "回答切分为 2 个事实命题，其中 2 个获得上下文明确事实支持，全部论断严格契合证据，忠实度为 100.0%",
+        "answer_relevancy_reason": "回答切中了用户提问中 0.0% 的核心概念词并提供了关键数值/技术实体答复，切题相关度为 35.0%",
+        "context_precision_reason": "Top-1 切片中有 1 个切片命中了问题意图，经排名加权后的 MAP (Mean Average Precision) 精度得分为 1.0",
+        "context_recall_reason": "标准事实共含 5 项核心实体词，上下文成功召回 5 项 (['母块', '1500', '字', '子块', '300'])，核心事实完全覆盖 (100%)，客观实体召回率为 100.0%"
+      }
+    },
+    {
+      "sample_id": 2,
+      "query": "检索融合阶段采用了什么算法抹平量纲差异？",
+      "ground_truth": "RRF互逆排名融合算法(k=60)。",
+      "metrics": {
+        "context_recall": 0.7143,
+        "context_precision": 1.0,
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.8667,
+        "overall_score": 0.9095,
+        "evaluated_at": 1792547398.993921
+      },
+      "audit_reasons": {
+        "faithfulness_reason": "回答切分为 2 个事实命题，其中 2 个获得上下文明确事实支持，全部论断严格契合证据，忠实度为 100.0%",
+        "answer_relevancy_reason": "回答切中了用户提问中 55.6% 的核心概念词并提供了关键数值/技术实体答复，切题相关度为 86.67%",
+        "context_precision_reason": "Top-1 切片中有 1 个切片命中了问题意图，经排名加权后的 MAP (Mean Average Precision) 精度得分为 1.0",
+        "context_recall_reason": "标准事实共含 7 项核心实体词，上下文成功召回 5 项 (['RRF', '互逆', '排名', '算法', '60'])，未命中 2 项 (['融合', 'k'])，客观实体召回率为 71.43%"
+      }
+    }
+  ]
+}
